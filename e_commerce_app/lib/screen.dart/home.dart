@@ -1,7 +1,12 @@
+import 'dart:convert';
+
+import 'package:e_commerce_app/Data/item_list.dart';
+import 'package:e_commerce_app/models/items.dart';
 import 'package:e_commerce_app/screen.dart/account.dart';
 import 'package:e_commerce_app/screen.dart/cart.dart';
 import 'package:e_commerce_app/widget/item_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -43,6 +48,33 @@ class _HomeState extends State<Home> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    getProduct();
+  }
+
+  Future<List<Items>> getProduct() async {
+    const baseUrl = "https://fakestoreapi.com/products";
+
+    try {
+      final response = await http.get(Uri.parse(baseUrl));
+      if (response.statusCode == 200) {
+        List<dynamic> productJson = json.decode(response.body);
+        List<Items> productList =
+            productJson.map((item) => Items.fromJson(item)).toList();
+
+        itemList = productList;
+        return productList;
+      } else {
+        throw Exception('Failed to load products');
+      }
+    } catch (e) {
+      print('Error: $e');
+      return [];
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       bottomNavigationBar: BottomNavigationBar(
@@ -63,13 +95,25 @@ class _HomeState extends State<Home> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            const Text(
-              "Hello Fola",
-              textAlign: TextAlign.start,
-              style: TextStyle(
-                  color: Colors.black,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 30),
+            const Row(
+              children: [
+                Text(
+                  "Hello Fola",
+                  textAlign: TextAlign.start,
+                  style: TextStyle(
+                      color: Colors.black,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 30),
+                ),
+                SizedBox(
+                  width: 10,
+                ),
+                Icon(
+                  Icons.card_giftcard,
+                  color: Colors.orange,
+                  size: 36,
+                ),
+              ],
             ),
             const SizedBox(
               height: 5,
@@ -104,7 +148,7 @@ class _HomeState extends State<Home> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   const Text(
-                    "Top Categories",
+                    "Top Products",
                     style: TextStyle(
                         fontWeight: FontWeight.bold,
                         color: Colors.black,

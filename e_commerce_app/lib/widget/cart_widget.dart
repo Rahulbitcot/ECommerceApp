@@ -9,6 +9,20 @@ class CartWidget extends StatefulWidget {
 }
 
 class _CartWidgetState extends State<CartWidget> {
+  void _removeItem(int index) {
+    setState(() {
+      cardItem.removeAt(index);
+    });
+  }
+
+  double _calculateTotal() {
+    double total = 0;
+    for (var i in cardItem) {
+      total = total + double.parse(i.price);
+    }
+    return total.roundToDouble();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -17,6 +31,7 @@ class _CartWidgetState extends State<CartWidget> {
           child: ListView.builder(
             itemCount: cardItem.length,
             itemBuilder: (context, index) => cardListView(
+                index,
                 cardItem[index].title,
                 cardItem[index].imgUrl,
                 cardItem[index].price,
@@ -30,10 +45,10 @@ class _CartWidgetState extends State<CartWidget> {
             padding: const EdgeInsets.only(left: 30, top: 20, right: 30),
             child: Column(
               children: [
-                const Row(
+                Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
+                    const Text(
                       "Total :",
                       style: TextStyle(
                           color: Color.fromARGB(255, 72, 71, 71),
@@ -41,8 +56,8 @@ class _CartWidgetState extends State<CartWidget> {
                           fontWeight: FontWeight.bold),
                     ),
                     Text(
-                      "INR: 452",
-                      style: TextStyle(
+                      "INR: ${_calculateTotal()}",
+                      style: const TextStyle(
                           color: Colors.orange,
                           fontSize: 24,
                           fontWeight: FontWeight.bold),
@@ -67,67 +82,77 @@ class _CartWidgetState extends State<CartWidget> {
       ],
     );
   }
-}
 
-Widget cardListView(String title, String imgUrl, String price, Color bgColor) {
-  return Card(
-    margin: const EdgeInsets.only(top: 20, left: 20, right: 20),
-    color: const Color.fromARGB(83, 255, 255, 255),
-    child: Row(
-      children: [
-        Container(
-          decoration: BoxDecoration(
-            color: bgColor,
-            borderRadius: const BorderRadius.all(
-              Radius.circular(20),
+  Widget cardListView(
+      int index, String title, String imgUrl, String price, Color bgColor) {
+    return Card(
+      margin: const EdgeInsets.only(top: 20, left: 20, right: 20),
+      color: const Color.fromARGB(83, 255, 255, 255),
+      child: Row(
+        children: [
+          Container(
+            decoration: BoxDecoration(
+              color: bgColor,
+              borderRadius: const BorderRadius.all(
+                Radius.circular(20),
+              ),
+            ),
+            margin: const EdgeInsets.all(10),
+            padding: const EdgeInsets.all(10),
+            child: SizedBox(
+              width: 80,
+              height: 80,
+              child: Image.network(
+                imgUrl,
+              ),
             ),
           ),
-          margin: const EdgeInsets.all(20),
-          child: SizedBox(
-            width: 80,
-            height: 80,
-            child: Image.asset(
-              imgUrl,
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Text(
+                  title,
+                  style: const TextStyle(
+                      color: Colors.black,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                Text(
+                  "INR: $price",
+                  style: const TextStyle(
+                      color: Colors.black,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 15),
+                ),
+              ],
             ),
           ),
-        ),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
+          Expanded(
+              child: Column(
             children: [
-              Text(
-                title,
-                style: const TextStyle(
-                    color: Colors.black,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 20),
+              IconButton(
+                onPressed: () {
+                  _removeItem(index);
+                },
+                icon: const Icon(Icons.delete),
               ),
-              const SizedBox(
-                height: 10,
-              ),
-              Text(
-                "INR: $price",
-                style: const TextStyle(
-                    color: Colors.black,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 15),
+              const Text(
+                "Size: M",
+                style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 18,
+                ),
               ),
             ],
-          ),
-        ),
-        const Expanded(
-            child: Column(
-          children: [
-            Text(
-              "Size: M",
-              style: TextStyle(
-                color: Colors.black,
-                fontSize: 18,
-              ),
-            ),
-          ],
-        ))
-      ],
-    ),
-  );
+          ))
+        ],
+      ),
+    );
+  }
 }

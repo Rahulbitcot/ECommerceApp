@@ -1,4 +1,6 @@
+import 'package:e_commerce_app/Data/cart_list.dart';
 import 'package:e_commerce_app/Data/item_list.dart';
+import 'package:e_commerce_app/models/cart.dart';
 import 'package:flutter/material.dart';
 
 class ItemWidget extends StatefulWidget {
@@ -9,6 +11,8 @@ class ItemWidget extends StatefulWidget {
 }
 
 class _ItemWidgetState extends State<ItemWidget> {
+  List<CartItem> cardItem = [];
+
   @override
   Widget build(BuildContext context) {
     return GridView.builder(
@@ -41,23 +45,27 @@ Widget cardView(String title, String imgUrl, String price, String discount) {
                       fontWeight: FontWeight.bold),
                 ),
                 IconButton(
-                  onPressed: () {},
-                  icon: const Icon(
-                    Icons.shopping_cart,
-                  ),
-                ),
+                  onPressed: () {
+                    cardItem.add(CartItem(
+                      title: title,
+                      imgUrl: imgUrl,
+                      price: price,
+                      color: const Color.fromARGB(196, 122, 122, 122),
+                    ));
+                  },
+                  icon: const Icon(Icons.add_shopping_cart),
+                )
               ],
             ),
           ),
-          Image.asset(
+          Image.network(
             imgUrl,
             height: 100,
           ),
-          Text(
-            title,
-            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-            textAlign: TextAlign.start,
-          ),
+          Text(title,
+              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+              textAlign: TextAlign.start,
+              overflow: TextOverflow.ellipsis),
           const SizedBox(
             height: 10,
           ),
