@@ -50,7 +50,9 @@ class _HomeState extends State<Home> {
   @override
   void initState() {
     super.initState();
-    getProduct();
+    setState(() {
+      getProduct();
+    });
   }
 
   Future<List<Items>> getProduct() async {
@@ -60,10 +62,14 @@ class _HomeState extends State<Home> {
       final response = await http.get(Uri.parse(baseUrl));
       if (response.statusCode == 200) {
         List<dynamic> productJson = json.decode(response.body);
+
         List<Items> productList =
             productJson.map((item) => Items.fromJson(item)).toList();
 
-        itemList = productList;
+        setState(() {
+          itemList = productList;
+        });
+
         return productList;
       } else {
         throw Exception('Failed to load products');
@@ -90,8 +96,8 @@ class _HomeState extends State<Home> {
       appBar: AppBar(
         title: const Center(child: Text("Watch app")),
       ),
-      body: Container(
-        padding: const EdgeInsets.all(20),
+      body: Padding(
+        padding: const EdgeInsets.all(8.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
@@ -105,26 +111,13 @@ class _HomeState extends State<Home> {
                       fontWeight: FontWeight.bold,
                       fontSize: 30),
                 ),
-                SizedBox(
-                  width: 10,
-                ),
-                Icon(
-                  Icons.card_giftcard,
-                  color: Colors.orange,
-                  size: 36,
-                ),
+                SizedBox(width: 10),
+                Icon(Icons.card_giftcard, color: Colors.orange, size: 36),
               ],
             ),
-            const SizedBox(
-              height: 5,
-            ),
-            const Text(
-              "Let's Start Shopping",
-              style: TextStyle(fontSize: 16),
-            ),
-            const SizedBox(
-              height: 20,
-            ),
+            const SizedBox(height: 5),
+            const Text("Let's Start Shopping", style: TextStyle(fontSize: 16)),
+            const SizedBox(height: 20),
             SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               child: Row(

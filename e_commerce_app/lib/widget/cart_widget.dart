@@ -40,7 +40,7 @@ class _CartWidgetState extends State<CartWidget> {
         ),
         SizedBox(
           width: double.infinity,
-          height: 130,
+          height: 150,
           child: Container(
             padding: const EdgeInsets.only(left: 30, top: 20, right: 30),
             child: Column(
@@ -64,16 +64,19 @@ class _CartWidgetState extends State<CartWidget> {
                     ),
                   ],
                 ),
-                ElevatedButton(
-                  style: const ButtonStyle(
-                    backgroundColor: WidgetStatePropertyAll(Colors.orange),
-                  ),
-                  onPressed: () {},
-                  child: const Text(
-                    "Buy Now",
-                    style: TextStyle(
-                        color: Color.fromARGB(255, 34, 34, 34), fontSize: 20),
-                  ),
+                Padding(
+                  padding: const EdgeInsets.all(10),
+                  child: ElevatedButton(
+                      style: const ButtonStyle(
+                        backgroundColor: WidgetStatePropertyAll(Colors.amber),
+                        fixedSize:
+                            WidgetStatePropertyAll(Size(double.maxFinite, 60)),
+                      ),
+                      onPressed: () {},
+                      child: const Text(
+                        "Buy Now",
+                        style: TextStyle(color: Colors.black, fontSize: 20),
+                      )),
                 ),
               ],
             ),
