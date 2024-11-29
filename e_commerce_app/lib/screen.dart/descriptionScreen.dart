@@ -1,6 +1,8 @@
-import 'package:e_commerce_app/Data/cart_list.dart';
+import 'dart:convert';
+
 import 'package:e_commerce_app/models/cart.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Descriptionscreen extends StatelessWidget {
   const Descriptionscreen({
@@ -17,6 +19,21 @@ class Descriptionscreen extends StatelessWidget {
   final String imgUrl;
   @override
   Widget build(BuildContext context) {
+    void _sharedPref() async {
+      final SharedPreferences pref = await SharedPreferences.getInstance();
+      List<String> cartItemList = pref.getStringList("CartItemList") ?? [];
+      CartItem newItem = CartItem(
+        title: title,
+        imgUrl: imgUrl,
+        price: price,
+        color: const Color.fromARGB(196, 122, 122, 122),
+      );
+
+      cartItemList.add(jsonEncode(newItem.toJson()));
+
+      pref.setStringList("CartItemList", cartItemList);
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: const Text("Product Description"),
@@ -89,14 +106,7 @@ class Descriptionscreen extends StatelessWidget {
                   backgroundColor: WidgetStatePropertyAll(Colors.amber),
                   fixedSize: WidgetStatePropertyAll(Size(double.maxFinite, 60)),
                 ),
-                onPressed: () {
-                  cardItem.add(CartItem(
-                    title: title,
-                    imgUrl: imgUrl,
-                    price: price,
-                    color: const Color.fromARGB(196, 122, 122, 122),
-                  ));
-                },
+                onPressed: _sharedPref,
                 child: const Text(
                   "Add to Cart",
                   style: TextStyle(color: Colors.black, fontSize: 20),

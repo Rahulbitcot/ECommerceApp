@@ -1,5 +1,7 @@
-import 'package:e_commerce_app/Data/cart_list.dart';
+import 'dart:convert';
+import 'package:e_commerce_app/models/cart.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class CartWidget extends StatefulWidget {
   const CartWidget({super.key});
@@ -9,18 +11,43 @@ class CartWidget extends StatefulWidget {
 }
 
 class _CartWidgetState extends State<CartWidget> {
+  List<CartItem> cardItem = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _loadCartItems();
+  }
+
+  // Load the cart items from SharedPreferences
+  void _loadCartItems() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    List<String>? cartItemList = prefs.getStringList("CartItemList");
+
+    if (cartItemList != null) {
+      setState(() {
+        // Deserialize the cart items from the list of JSON strings
+        cardItem = cartItemList
+            .map((jsonStr) => CartItem.fromJson(jsonDecode(jsonStr)))
+            .toList();
+      });
+    }
+  }
+
+  // Remove an item from the cart
   void _removeItem(int index) {
     setState(() {
       cardItem.removeAt(index);
     });
   }
 
+  // Calculate the total price of items in the cart
   double _calculateTotal() {
     double total = 0;
-    for (var i in cardItem) {
-      total = total + double.parse(i.price);
+    for (var item in cardItem) {
+      total += double.parse(item.price); // Assuming price is a double already
     }
-    return total.roundToDouble();
+    return total;
   }
 
   @override
@@ -31,11 +58,12 @@ class _CartWidgetState extends State<CartWidget> {
           child: ListView.builder(
             itemCount: cardItem.length,
             itemBuilder: (context, index) => cardListView(
-                index,
-                cardItem[index].title,
-                cardItem[index].imgUrl,
-                cardItem[index].price,
-                cardItem[index].color),
+              index,
+              cardItem[index].title,
+              cardItem[index].imgUrl,
+              cardItem[index].price.toString(),
+              cardItem[index].color,
+            ),
           ),
         ),
         SizedBox(
@@ -51,41 +79,45 @@ class _CartWidgetState extends State<CartWidget> {
                     const Text(
                       "Total :",
                       style: TextStyle(
-                          color: Color.fromARGB(255, 72, 71, 71),
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold),
+                        color: Color.fromARGB(255, 72, 71, 71),
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                     Text(
                       "INR: ${_calculateTotal()}",
                       style: const TextStyle(
-                          color: Colors.orange,
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold),
+                        color: Colors.orange,
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ],
                 ),
                 Padding(
                   padding: const EdgeInsets.all(10),
                   child: ElevatedButton(
-                      style: const ButtonStyle(
-                        backgroundColor: WidgetStatePropertyAll(Colors.amber),
-                        fixedSize:
-                            WidgetStatePropertyAll(Size(double.maxFinite, 60)),
-                      ),
-                      onPressed: () {},
-                      child: const Text(
-                        "Buy Now",
-                        style: TextStyle(color: Colors.black, fontSize: 20),
-                      )),
+                    style: const ButtonStyle(
+                      backgroundColor: MaterialStatePropertyAll(Colors.amber),
+                      fixedSize:
+                          MaterialStatePropertyAll(Size(double.maxFinite, 60)),
+                    ),
+                    onPressed: () {},
+                    child: const Text(
+                      "Buy Now",
+                      style: TextStyle(color: Colors.black, fontSize: 20),
+                    ),
+                  ),
                 ),
               ],
             ),
           ),
-        )
+        ),
       ],
     );
   }
 
+  // Widget to display each item in the cart
   Widget cardListView(
       int index, String title, String imgUrl, String price, Color bgColor) {
     return Card(
@@ -96,18 +128,14 @@ class _CartWidgetState extends State<CartWidget> {
           Container(
             decoration: BoxDecoration(
               color: bgColor,
-              borderRadius: const BorderRadius.all(
-                Radius.circular(20),
-              ),
+              borderRadius: const BorderRadius.all(Radius.circular(20)),
             ),
             margin: const EdgeInsets.all(10),
             padding: const EdgeInsets.all(10),
             child: SizedBox(
               width: 80,
               height: 80,
-              child: Image.network(
-                imgUrl,
-              ),
+              child: Image.network(imgUrl),
             ),
           ),
           Expanded(
@@ -117,43 +145,44 @@ class _CartWidgetState extends State<CartWidget> {
                 Text(
                   title,
                   style: const TextStyle(
-                      color: Colors.black,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 20),
+                    color: Colors.black,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 20,
+                  ),
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                 ),
-                const SizedBox(
-                  height: 10,
-                ),
+                const SizedBox(height: 10),
                 Text(
                   "INR: $price",
                   style: const TextStyle(
-                      color: Colors.black,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 15),
+                    color: Colors.black,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 15,
+                  ),
                 ),
               ],
             ),
           ),
           Expanded(
-              child: Column(
-            children: [
-              IconButton(
-                onPressed: () {
-                  _removeItem(index);
-                },
-                icon: const Icon(Icons.delete),
-              ),
-              const Text(
-                "Size: M",
-                style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 18,
+            child: Column(
+              children: [
+                IconButton(
+                  onPressed: () {
+                    _removeItem(index);
+                  },
+                  icon: const Icon(Icons.delete),
                 ),
-              ),
-            ],
-          ))
+                const Text(
+                  "Size: M",
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 18,
+                  ),
+                ),
+              ],
+            ),
+          ),
         ],
       ),
     );
