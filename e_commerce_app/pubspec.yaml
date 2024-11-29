@@ -38,6 +38,7 @@ dependencies:
   cupertino_icons: ^1.0.8
   
   http: ^1.2.2
+  image_picker: ^1.1.2
 
 dev_dependencies:
   flutter_test:
@@ -70,6 +71,8 @@ flutter:
     - assets/images/watch4.png
     - assets/images/headphone.png
     - assets/images/shoes.png
+    - assets/images/imgbg.png
+    - assets/images/sleep.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

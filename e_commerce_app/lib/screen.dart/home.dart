@@ -96,6 +96,81 @@ class _HomeState extends State<Home> {
       appBar: AppBar(
         title: const Center(child: Text("Watch app")),
       ),
+      drawer: Drawer(
+        backgroundColor: const Color.fromARGB(255, 240, 240, 239),
+        child: Column(
+          children: [
+            DrawerHeader(
+              child: Container(
+                padding: const EdgeInsets.only(
+                    bottom: 10, top: 10, left: 15, right: 10),
+                decoration: BoxDecoration(
+                  color: const Color.fromARGB(68, 253, 206, 0),
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                width: double.infinity,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Expanded(child: Image.asset("assets/images/sleep.png")),
+                    const SizedBox(height: 10),
+                    const Text(
+                      "John Deo",
+                      style: TextStyle(
+                          color: Color.fromARGB(255, 0, 0, 0),
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold),
+                    ),
+                    const Text(
+                      "rahulmukati@bitcot.com",
+                      style: TextStyle(color: Colors.black, fontSize: 16),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(height: 10),
+            ListTile(
+              onTap: () {},
+              iconColor: Colors.black,
+              splashColor: const Color.fromARGB(68, 253, 206, 0),
+              leading: const Icon(Icons.person),
+              title: const Text("Personal Information"),
+            ),
+            ListTile(
+              onTap: () {},
+              iconColor: Colors.black,
+              splashColor: const Color.fromARGB(68, 253, 206, 0),
+              leading: const Icon(Icons.monetization_on),
+              title: const Text("Bank Information"),
+            ),
+            ListTile(
+              onTap: () {},
+              iconColor: Colors.black,
+              splashColor: const Color.fromARGB(68, 253, 206, 0),
+              leading: const Icon(Icons.shop),
+              title: const Text("your Order"),
+            ),
+            ListTile(
+              onTap: () {},
+              iconColor: Colors.black,
+              splashColor: const Color.fromARGB(68, 253, 206, 0),
+              leading: const Icon(Icons.settings),
+              title: const Text("Setting"),
+            ),
+            ListTile(
+              onTap: () {},
+              iconColor: Colors.black,
+              splashColor: const Color.fromARGB(68, 253, 206, 0),
+              leading: const Icon(Icons.info),
+              title: const Text("About"),
+            ),
+            const Spacer(),
+            const Text("Version 1.0"),
+            const SizedBox(height: 10)
+          ],
+        ),
+      ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(
