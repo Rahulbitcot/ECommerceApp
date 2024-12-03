@@ -4,7 +4,7 @@ import 'package:e_commerce_app/models/cart.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class Descriptionscreen extends StatelessWidget {
+class Descriptionscreen extends StatefulWidget {
   const Descriptionscreen({
     super.key,
     required this.title,
@@ -17,21 +17,36 @@ class Descriptionscreen extends StatelessWidget {
   final String description;
   final String price;
   final String imgUrl;
+
+  @override
+  State<Descriptionscreen> createState() => _DescriptionscreenState();
+}
+
+class _DescriptionscreenState extends State<Descriptionscreen> {
+  String btnText = "Add to cart";
   @override
   Widget build(BuildContext context) {
     void _sharedPref() async {
       final SharedPreferences pref = await SharedPreferences.getInstance();
       List<String> cartItemList = pref.getStringList("CartItemList") ?? [];
       CartItem newItem = CartItem(
-        title: title,
-        imgUrl: imgUrl,
-        price: price,
+        title: widget.title,
+        imgUrl: widget.imgUrl,
+        price: widget.price,
         color: const Color.fromARGB(196, 122, 122, 122),
       );
 
       cartItemList.add(jsonEncode(newItem.toJson()));
 
       pref.setStringList("CartItemList", cartItemList);
+
+      setState(() {
+        if (btnText == "Add to cart") {
+          btnText = "Remove from cart";
+        } else {
+          btnText = "Add to Cart";
+        }
+      });
     }
 
     return Scaffold(
@@ -48,14 +63,14 @@ class Descriptionscreen extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     Image.network(
-                      imgUrl,
+                      widget.imgUrl,
                       height: 300,
                     ),
                     const SizedBox(
                       height: 20,
                     ),
                     Text(
-                      title,
+                      widget.title,
                       style: const TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 20,
@@ -65,7 +80,7 @@ class Descriptionscreen extends StatelessWidget {
                       height: 10,
                     ),
                     Text(
-                      "INR: $price",
+                      "INR: ${widget.price}",
                       style: const TextStyle(fontSize: 20),
                     ),
                     const SizedBox(
@@ -93,7 +108,7 @@ class Descriptionscreen extends StatelessWidget {
                     const SizedBox(
                       height: 20,
                     ),
-                    Text(description),
+                    Text(widget.description),
                   ],
                 ),
               ),
@@ -107,9 +122,9 @@ class Descriptionscreen extends StatelessWidget {
                   fixedSize: WidgetStatePropertyAll(Size(double.maxFinite, 60)),
                 ),
                 onPressed: _sharedPref,
-                child: const Text(
-                  "Add to Cart",
-                  style: TextStyle(color: Colors.black, fontSize: 20),
+                child: Text(
+                  btnText,
+                  style: const TextStyle(color: Colors.black, fontSize: 20),
                 )),
           ),
           const SizedBox(

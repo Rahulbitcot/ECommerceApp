@@ -47,7 +47,7 @@ class _CartWidgetState extends State<CartWidget> {
     for (var item in cardItem) {
       total += double.parse(item.price); // Assuming price is a double already
     }
-    return total;
+    return total.floorToDouble();
   }
 
   @override

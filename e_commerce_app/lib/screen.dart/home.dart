@@ -3,7 +3,11 @@ import 'dart:convert';
 import 'package:e_commerce_app/Data/item_list.dart';
 import 'package:e_commerce_app/models/items.dart';
 import 'package:e_commerce_app/screen.dart/account.dart';
+import 'package:e_commerce_app/screen.dart/bank_information.dart';
 import 'package:e_commerce_app/screen.dart/cart.dart';
+import 'package:e_commerce_app/screen.dart/personal_informatio.dart';
+import 'package:e_commerce_app/screen.dart/setting.dart';
+import 'package:e_commerce_app/screen.dart/your_order.dart';
 import 'package:e_commerce_app/widget/item_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -131,28 +135,44 @@ class _HomeState extends State<Home> {
             ),
             const SizedBox(height: 10),
             ListTile(
-              onTap: () {},
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const PersonalInformation()));
+              },
               iconColor: Colors.black,
               splashColor: const Color.fromARGB(68, 253, 206, 0),
               leading: const Icon(Icons.person),
               title: const Text("Personal Information"),
             ),
             ListTile(
-              onTap: () {},
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const BankInformation()));
+              },
               iconColor: Colors.black,
               splashColor: const Color.fromARGB(68, 253, 206, 0),
               leading: const Icon(Icons.monetization_on),
               title: const Text("Bank Information"),
             ),
             ListTile(
-              onTap: () {},
+              onTap: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => const YourOrder()));
+              },
               iconColor: Colors.black,
               splashColor: const Color.fromARGB(68, 253, 206, 0),
               leading: const Icon(Icons.shop),
               title: const Text("your Order"),
             ),
             ListTile(
-              onTap: () {},
+              onTap: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => const Setting()));
+              },
               iconColor: Colors.black,
               splashColor: const Color.fromARGB(68, 253, 206, 0),
               leading: const Icon(Icons.settings),
