@@ -1,4 +1,6 @@
+import 'package:e_commerce_app/screen.dart/auth.dart';
 import 'package:e_commerce_app/screen.dart/home.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -16,7 +18,18 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const Home(),
+      home: StreamBuilder(
+        stream: FirebaseAuth.instance.authStateChanges(),
+        builder: (ctx, snapshots) {
+          // if (snapshots.connectionState == ConnectionState.waiting) {
+          //   return null
+          // }
+          if (snapshots.hasData) {
+            return const Home();
+          }
+          return const Auth();
+        },
+      ),
     );
   }
 }
