@@ -39,9 +39,9 @@ class MyApp extends StatelessWidget {
       home: StreamBuilder(
         stream: FirebaseAuth.instance.authStateChanges(),
         builder: (ctx, snapshots) {
-          // if (snapshots.connectionState == ConnectionState.waiting) {
-          //   return null
-          // }
+          if (snapshots.connectionState == ConnectionState.waiting) {
+            return const CircularProgressIndicator(color: Colors.blue);
+          }
           if (snapshots.hasData) {
             return const Home();
           }

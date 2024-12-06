@@ -12,6 +12,7 @@ import 'package:e_commerce_app/widget/item_widget.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 final firebase = FirebaseAuth.instance;
 
@@ -89,6 +90,12 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
+    void onLogoutClearCart() async {
+      final SharedPreferences pref = await SharedPreferences.getInstance();
+      List<String> emptyList = [];
+      pref.setStringList("CartItemList", emptyList);
+    }
+
     return Scaffold(
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: 0,
@@ -105,7 +112,41 @@ class _HomeState extends State<Home> {
         actions: [
           IconButton(
               onPressed: () {
-                firebase.signOut();
+                showDialog(
+                    context: context,
+                    builder: (context) => AlertDialog(
+                          title: const Column(
+                            children: [
+                              Text("Are you sure want to logout ?"),
+                              SizedBox(
+                                height: 5,
+                              ),
+                              Padding(
+                                padding: EdgeInsets.all(10.0),
+                                child: Text(
+                                  "If you logout the item added to the cart will disappear...",
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          actions: [
+                            TextButton(
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                                child: const Text("no")),
+                            TextButton(
+                                onPressed: () {
+                                  firebase.signOut();
+                                  onLogoutClearCart();
+                                  Navigator.of(context).pop();
+                                },
+                                child: const Text("yes")),
+                          ],
+                        ));
               },
               icon: const Icon(Icons.logout))
         ],

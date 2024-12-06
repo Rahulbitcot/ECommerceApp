@@ -19,14 +19,12 @@ class _CartWidgetState extends State<CartWidget> {
     _loadCartItems();
   }
 
-  // Load the cart items from SharedPreferences
   void _loadCartItems() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     List<String>? cartItemList = prefs.getStringList("CartItemList");
 
     if (cartItemList != null) {
       setState(() {
-        // Deserialize the cart items from the list of JSON strings
         cardItem = cartItemList
             .map((jsonStr) => CartItem.fromJson(jsonDecode(jsonStr)))
             .toList();
@@ -34,18 +32,23 @@ class _CartWidgetState extends State<CartWidget> {
     }
   }
 
-  // Remove an item from the cart
-  void _removeItem(int index) {
+  void _removeItem(int index) async {
+    final SharedPreferences pref = await SharedPreferences.getInstance();
+    List<String> cartItemList = pref.getStringList("CartItemList") ?? [];
+    CartItem itemToRemove = CartItem.fromJson(jsonDecode(cartItemList[index]));
+    cartItemList.removeWhere(
+      (item) => CartItem.fromJson(jsonDecode(item)).title == itemToRemove.title,
+    );
+    await pref.setStringList("CartItemList", cartItemList);
     setState(() {
       cardItem.removeAt(index);
     });
   }
 
-  // Calculate the total price of items in the cart
   double _calculateTotal() {
     double total = 0;
     for (var item in cardItem) {
-      total += double.parse(item.price); // Assuming price is a double already
+      total += double.parse(item.price);
     }
     return total.floorToDouble();
   }
@@ -117,7 +120,6 @@ class _CartWidgetState extends State<CartWidget> {
     );
   }
 
-  // Widget to display each item in the cart
   Widget cardListView(
       int index, String title, String imgUrl, String price, Color bgColor) {
     return Card(

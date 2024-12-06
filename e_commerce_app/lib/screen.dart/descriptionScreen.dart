@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:e_commerce_app/models/cart.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -24,31 +23,55 @@ class Descriptionscreen extends StatefulWidget {
 
 class _DescriptionscreenState extends State<Descriptionscreen> {
   String btnText = "Add to cart";
+  List<String> cartItemList = [];
+  late SharedPreferences pref;
+  late CartItem newItem;
+
   @override
-  Widget build(BuildContext context) {
-    void _sharedPref() async {
-      final SharedPreferences pref = await SharedPreferences.getInstance();
-      List<String> cartItemList = pref.getStringList("CartItemList") ?? [];
-      CartItem newItem = CartItem(
-        title: widget.title,
-        imgUrl: widget.imgUrl,
-        price: widget.price,
-        color: const Color.fromARGB(196, 122, 122, 122),
-      );
+  void initState() {
+    super.initState();
+    newItem = CartItem(
+      title: widget.title,
+      imgUrl: widget.imgUrl,
+      price: widget.price,
+      color: const Color.fromARGB(196, 122, 122, 122),
+    );
+    setSharedPref();
+  }
 
+  void setSharedPref() async {
+    pref = await SharedPreferences.getInstance();
+    cartItemList = pref.getStringList("CartItemList") ?? [];
+
+    setState(() {
+      if (cartItemList.any((item) =>
+          CartItem.fromJson(jsonDecode(item)).title == newItem.title)) {
+        btnText = "Remove from cart";
+      } else {
+        btnText = "Add to cart";
+      }
+    });
+  }
+
+  void _sharedPref() async {
+    if (btnText == "Add to cart") {
       cartItemList.add(jsonEncode(newItem.toJson()));
-
-      pref.setStringList("CartItemList", cartItemList);
-
+      await pref.setStringList("CartItemList", cartItemList);
       setState(() {
-        if (btnText == "Add to cart") {
-          btnText = "Remove from cart";
-        } else {
-          btnText = "Add to Cart";
-        }
+        btnText = "Remove from cart";
+      });
+    } else {
+      cartItemList.removeWhere(
+          (item) => CartItem.fromJson(jsonDecode(item)).title == newItem.title);
+      await pref.setStringList("CartItemList", cartItemList);
+      setState(() {
+        btnText = "Add to cart";
       });
     }
+  }
 
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Product Description"),
