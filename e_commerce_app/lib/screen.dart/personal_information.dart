@@ -20,7 +20,7 @@ class _PersonalInformationState extends State<PersonalInformation> {
   String number = "Set your number";
   String address = "Set your address";
 
-  final _formKey = GlobalKey<FormState>(); // Form key for validation
+  final _formKey = GlobalKey<FormState>();
 
   void setUpSharedPref() async {
     pref = await SharedPreferences.getInstance();
@@ -38,6 +38,8 @@ class _PersonalInformationState extends State<PersonalInformation> {
         ScaffoldMessenger.of(context)
             .showSnackBar(const SnackBar(content: Text("Profile Updated")));
       }
+
+      FocusScope.of(context).unfocus();
     }
   }
 

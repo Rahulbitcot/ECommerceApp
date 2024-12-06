@@ -82,7 +82,7 @@ class _AuthState extends State<Auth> {
                   bottom: 20,
                 ),
                 child: Image.asset(
-                  "assets/images/chat.png",
+                  "assets/images/image.png",
                   scale: 2,
                 ),
               ),

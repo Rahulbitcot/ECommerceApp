@@ -45,7 +45,8 @@ class _ItemWidgetState extends State<ItemWidget> {
         ),
       },
       child: Card(
-        color: const Color.fromARGB(255, 226, 225, 223),
+        color: Colors.white,
+        elevation: 10,
         child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Column(

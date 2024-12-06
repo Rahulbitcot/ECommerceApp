@@ -5,12 +5,15 @@ import 'package:e_commerce_app/models/items.dart';
 import 'package:e_commerce_app/screen.dart/account.dart';
 import 'package:e_commerce_app/screen.dart/bank_information.dart';
 import 'package:e_commerce_app/screen.dart/cart.dart';
-import 'package:e_commerce_app/screen.dart/personal_informatio.dart';
+import 'package:e_commerce_app/screen.dart/personal_information.dart';
 import 'package:e_commerce_app/screen.dart/setting.dart';
 import 'package:e_commerce_app/screen.dart/your_order.dart';
 import 'package:e_commerce_app/widget/item_widget.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+
+final firebase = FirebaseAuth.instance;
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -98,7 +101,14 @@ class _HomeState extends State<Home> {
         ],
       ),
       appBar: AppBar(
-        title: const Center(child: Text("Watch app")),
+        title: const Center(child: Text("Shop here ")),
+        actions: [
+          IconButton(
+              onPressed: () {
+                firebase.signOut();
+              },
+              icon: const Icon(Icons.logout))
+        ],
       ),
       drawer: Drawer(
         backgroundColor: const Color.fromARGB(255, 240, 240, 239),
