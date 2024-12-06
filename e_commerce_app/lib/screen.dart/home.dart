@@ -3,11 +3,8 @@ import 'dart:convert';
 import 'package:e_commerce_app/Data/item_list.dart';
 import 'package:e_commerce_app/models/items.dart';
 import 'package:e_commerce_app/screen.dart/account.dart';
-import 'package:e_commerce_app/screen.dart/bank_information.dart';
 import 'package:e_commerce_app/screen.dart/cart.dart';
-import 'package:e_commerce_app/screen.dart/personal_information.dart';
-import 'package:e_commerce_app/screen.dart/setting.dart';
-import 'package:e_commerce_app/screen.dart/your_order.dart';
+import 'package:e_commerce_app/widget/drawer_widget.dart';
 import 'package:e_commerce_app/widget/item_widget.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -90,7 +87,7 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
-    void onLogoutClearCart() async {
+    void _onLogoutClearCart() async {
       final SharedPreferences pref = await SharedPreferences.getInstance();
       List<String> emptyList = [];
       pref.setStringList("CartItemList", emptyList);
@@ -141,7 +138,7 @@ class _HomeState extends State<Home> {
                             TextButton(
                                 onPressed: () {
                                   firebase.signOut();
-                                  onLogoutClearCart();
+                                  _onLogoutClearCart();
                                   Navigator.of(context).pop();
                                 },
                                 child: const Text("yes")),
@@ -151,97 +148,7 @@ class _HomeState extends State<Home> {
               icon: const Icon(Icons.logout))
         ],
       ),
-      drawer: Drawer(
-        backgroundColor: const Color.fromARGB(255, 240, 240, 239),
-        child: Column(
-          children: [
-            DrawerHeader(
-              child: Container(
-                padding: const EdgeInsets.only(
-                    bottom: 10, top: 10, left: 15, right: 10),
-                decoration: BoxDecoration(
-                  color: const Color.fromARGB(68, 253, 206, 0),
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                width: double.infinity,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Expanded(child: Image.asset("assets/images/sleep.png")),
-                    const SizedBox(height: 10),
-                    const Text(
-                      "John Deo",
-                      style: TextStyle(
-                          color: Color.fromARGB(255, 0, 0, 0),
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold),
-                    ),
-                    const Text(
-                      "rahulmukati@bitcot.com",
-                      style: TextStyle(color: Colors.black, fontSize: 16),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            const SizedBox(height: 10),
-            ListTile(
-              onTap: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const PersonalInformation()));
-              },
-              iconColor: Colors.black,
-              splashColor: const Color.fromARGB(68, 253, 206, 0),
-              leading: const Icon(Icons.person),
-              title: const Text("Personal Information"),
-            ),
-            ListTile(
-              onTap: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const BankInformation()));
-              },
-              iconColor: Colors.black,
-              splashColor: const Color.fromARGB(68, 253, 206, 0),
-              leading: const Icon(Icons.monetization_on),
-              title: const Text("Bank Information"),
-            ),
-            ListTile(
-              onTap: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => const YourOrder()));
-              },
-              iconColor: Colors.black,
-              splashColor: const Color.fromARGB(68, 253, 206, 0),
-              leading: const Icon(Icons.shop),
-              title: const Text("your Order"),
-            ),
-            ListTile(
-              onTap: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => const Setting()));
-              },
-              iconColor: Colors.black,
-              splashColor: const Color.fromARGB(68, 253, 206, 0),
-              leading: const Icon(Icons.settings),
-              title: const Text("Setting"),
-            ),
-            ListTile(
-              onTap: () {},
-              iconColor: Colors.black,
-              splashColor: const Color.fromARGB(68, 253, 206, 0),
-              leading: const Icon(Icons.info),
-              title: const Text("About"),
-            ),
-            const Spacer(),
-            const Text("Version 1.0"),
-            const SizedBox(height: 10)
-          ],
-        ),
-      ),
+      drawer: const DrawerWidget(),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(

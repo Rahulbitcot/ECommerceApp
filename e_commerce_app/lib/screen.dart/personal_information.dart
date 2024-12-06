@@ -1,5 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+
+final firebase = FirebaseAuth.instance;
+final firestore = FirebaseFirestore.instance;
 
 class PersonalInformation extends StatefulWidget {
   const PersonalInformation({super.key});
@@ -14,7 +18,6 @@ class _PersonalInformationState extends State<PersonalInformation> {
   final TextEditingController _numberController = TextEditingController();
   final TextEditingController _addressController = TextEditingController();
 
-  late SharedPreferences pref;
   String name = "Set your name";
   String email = "Set your email";
   String number = "Set your number";
@@ -22,45 +25,71 @@ class _PersonalInformationState extends State<PersonalInformation> {
 
   final _formKey = GlobalKey<FormState>();
 
-  void setUpSharedPref() async {
-    pref = await SharedPreferences.getInstance();
-    setUserInfo();
-  }
-
   void saveUserInfo() {
     if (_formKey.currentState?.validate() ?? false) {
-      pref.setString("name", _nameController.text);
-      pref.setString("email", _emailController.text);
-      pref.setString("number", _numberController.text);
-      pref.setString("address", _addressController.text);
-
+      saveUserInfoInFirebase();
+      setUserInfo();
       if (mounted) {
         ScaffoldMessenger.of(context)
             .showSnackBar(const SnackBar(content: Text("Profile Updated")));
       }
-
       FocusScope.of(context).unfocus();
     }
   }
 
-  void setUserInfo() {
-    setState(() {
-      name = pref.getString("name") ?? "Set your name";
-      email = pref.getString("email") ?? "Set your email";
-      number = pref.getString("number") ?? "Set your number";
-      address = pref.getString("address") ?? "Set your address";
+  void saveUserInfoInFirebase() async {
+    User? user = firebase.currentUser;
 
-      _nameController.text = name;
-      _emailController.text = email;
-      _numberController.text = number;
-      _addressController.text = address;
-    });
+    if (user != null) {
+      DocumentReference userRef = firestore.collection('users').doc(user.uid);
+
+      userRef.set({
+        'name': _nameController.text,
+        'email': _emailController.text,
+        'phone': _numberController.text,
+        'address': _addressController.text,
+        'uid': user.uid,
+      }, SetOptions(merge: true));
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("User not logged in")),
+      );
+    }
+  }
+
+  void setUserInfo() async {
+    User? user = firebase.currentUser;
+
+    if (user != null) {
+      DocumentSnapshot snapshot =
+          await firestore.collection('users').doc(user.uid).get();
+
+      if (snapshot.exists) {
+        setState(() {
+          name = snapshot['name'] ?? "Set your name";
+          email = snapshot['email'] ?? "Set your email";
+          number = snapshot['phone'] ?? "Set your number";
+          address = snapshot['address'] ?? "Set your address";
+
+          _nameController.text = name;
+          _emailController.text = email;
+          _numberController.text = number;
+          _addressController.text = address;
+        });
+      } else {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(const SnackBar(content: Text("User data not found")));
+      }
+    } else {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(const SnackBar(content: Text("User not logged in")));
+    }
   }
 
   @override
   void initState() {
     super.initState();
-    setUpSharedPref();
+    setUserInfo();
   }
 
   @override
