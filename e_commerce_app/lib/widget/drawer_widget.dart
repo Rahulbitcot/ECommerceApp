@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:e_commerce_app/screen.dart/bank_information.dart';
+import 'package:e_commerce_app/screen.dart/add_credit_card.dart';
 import 'package:e_commerce_app/screen.dart/personal_information.dart';
 import 'package:e_commerce_app/screen.dart/setting.dart';
 import 'package:e_commerce_app/screen.dart/your_order.dart';
@@ -101,12 +101,12 @@ class _DrawerWidgetState extends State<DrawerWidget> {
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => const BankInformation()));
+                      builder: (context) => CreditCardFormPage()));
             },
             iconColor: Colors.black,
             splashColor: const Color.fromARGB(68, 253, 206, 0),
-            leading: const Icon(Icons.monetization_on),
-            title: const Text("Bank Information"),
+            leading: const Icon(Icons.credit_card),
+            title: const Text("Credit Card Info"),
           ),
           ListTile(
             onTap: () {
