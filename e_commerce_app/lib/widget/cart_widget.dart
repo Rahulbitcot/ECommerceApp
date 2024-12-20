@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:e_commerce_app/models/cart.dart';
+import 'package:e_commerce_app/screen.dart/order_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -105,7 +106,60 @@ class _CartWidgetState extends State<CartWidget> {
                       fixedSize:
                           MaterialStatePropertyAll(Size(double.maxFinite, 60)),
                     ),
-                    onPressed: () {},
+                    onPressed: () {
+                      showDialog(
+                          context: context,
+                          builder: (context) => AlertDialog(
+                                title: Column(
+                                  children: [
+                                    const Text(
+                                      "Order Placed..!",
+                                      style: TextStyle(
+                                          fontSize: 30,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    const SizedBox(
+                                      height: 5,
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.all(10.0),
+                                      child: Text(
+                                        "Want to continue your orders with amount INR ${_calculateTotal()}",
+                                        style: const TextStyle(
+                                          fontSize: 20,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                actions: [
+                                  TextButton(
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                      child: const Text(
+                                        "no",
+                                        style: const TextStyle(
+                                          fontSize: 24,
+                                        ),
+                                      )),
+                                  TextButton(
+                                      onPressed: () {
+                                        Navigator.pushReplacement(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    const OrderScreen()));
+                                      },
+                                      child: const Text(
+                                        "yes",
+                                        style: TextStyle(
+                                          fontSize: 24,
+                                        ),
+                                      )),
+                                ],
+                              ));
+                    },
                     child: const Text(
                       "Buy Now",
                       style: TextStyle(color: Colors.black, fontSize: 20),

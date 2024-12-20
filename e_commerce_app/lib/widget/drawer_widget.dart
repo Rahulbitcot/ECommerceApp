@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:e_commerce_app/screen.dart/add_credit_card.dart';
+import 'package:e_commerce_app/screen.dart/order_screen.dart';
 import 'package:e_commerce_app/screen.dart/personal_information.dart';
 import 'package:e_commerce_app/screen.dart/setting.dart';
-import 'package:e_commerce_app/screen.dart/your_order.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -98,10 +98,10 @@ class _DrawerWidgetState extends State<DrawerWidget> {
           ),
           ListTile(
             onTap: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => CreditCardFormPage()));
+              // Navigator.push(
+              //     context,
+              //     MaterialPageRoute(
+              //         builder: (context) => CreditCardFormPage()));
             },
             iconColor: Colors.black,
             splashColor: const Color.fromARGB(68, 253, 206, 0),
@@ -111,7 +111,7 @@ class _DrawerWidgetState extends State<DrawerWidget> {
           ListTile(
             onTap: () {
               Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => const YourOrder()));
+                  MaterialPageRoute(builder: (context) => const OrderScreen()));
             },
             iconColor: Colors.black,
             splashColor: const Color.fromARGB(68, 253, 206, 0),
