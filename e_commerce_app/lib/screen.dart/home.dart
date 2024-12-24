@@ -1,15 +1,16 @@
 import 'dart:convert';
-
 import 'package:e_commerce_app/Data/item_list.dart';
 import 'package:e_commerce_app/models/items.dart';
 import 'package:e_commerce_app/screen.dart/account.dart';
+import 'package:e_commerce_app/screen.dart/auth.dart';
 import 'package:e_commerce_app/screen.dart/cart.dart';
+import 'package:e_commerce_app/screen.dart/descriptionScreen.dart';
 import 'package:e_commerce_app/widget/drawer_widget.dart';
-import 'package:e_commerce_app/widget/item_widget.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 
 final firebase = FirebaseAuth.instance;
 
@@ -22,6 +23,13 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   var _selectedPage = 0;
+  bool _isloading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    getProduct();
+  }
 
   void onSelect(int currentIndex) {
     setState(() {
@@ -31,50 +39,33 @@ class _HomeState extends State<Home> {
     if (_selectedPage == 0) {
       Navigator.push(
         context,
-        MaterialPageRoute(
-          builder: (context) => const Home(),
-        ),
+        MaterialPageRoute(builder: (context) => const Home()),
       );
     } else if (_selectedPage == 1) {
       Navigator.push(
         context,
-        MaterialPageRoute(
-          builder: (context) => const Cart(),
-        ),
+        MaterialPageRoute(builder: (context) => const Cart()),
       );
     } else if (_selectedPage == 2) {
       Navigator.push(
         context,
-        MaterialPageRoute(
-          builder: (context) => const Account(),
-        ),
+        MaterialPageRoute(builder: (context) => const Account()),
       );
     }
   }
 
-  @override
-  void initState() {
-    super.initState();
-    setState(() {
-      getProduct();
-    });
-  }
-
   Future<List<Items>> getProduct() async {
     const baseUrl = "https://fakestoreapi.com/products";
-
     try {
       final response = await http.get(Uri.parse(baseUrl));
       if (response.statusCode == 200) {
         List<dynamic> productJson = json.decode(response.body);
-
         List<Items> productList =
             productJson.map((item) => Items.fromJson(item)).toList();
-
         setState(() {
           itemList = productList;
+          _isloading = false;
         });
-
         return productList;
       } else {
         throw Exception('Failed to load products');
@@ -85,67 +76,48 @@ class _HomeState extends State<Home> {
     }
   }
 
+  Future<void> _onLogoutClearCart() async {
+    final SharedPreferences pref = await SharedPreferences.getInstance();
+    pref.setStringList("CartItemList", []);
+  }
+
   @override
   Widget build(BuildContext context) {
-    void _onLogoutClearCart() async {
-      final SharedPreferences pref = await SharedPreferences.getInstance();
-      List<String> emptyList = [];
-      pref.setStringList("CartItemList", emptyList);
-    }
-
     return Scaffold(
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: 0,
-        onTap: onSelect,
-        items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.shopping_cart), label: 'Cart'),
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Account'),
-        ],
-      ),
       appBar: AppBar(
         title: const Center(child: Text("Shop here ")),
         actions: [
           IconButton(
-              onPressed: () {
-                showDialog(
-                    context: context,
-                    builder: (context) => AlertDialog(
-                          title: const Column(
-                            children: [
-                              Text("Are you sure want to logout ?"),
-                              SizedBox(
-                                height: 5,
-                              ),
-                              Padding(
-                                padding: EdgeInsets.all(10.0),
-                                child: Text(
-                                  "If you logout the item added to the cart will disappear...",
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                          actions: [
-                            TextButton(
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                },
-                                child: const Text("no")),
-                            TextButton(
-                                onPressed: () {
-                                  firebase.signOut();
-                                  _onLogoutClearCart();
-                                  Navigator.of(context).pop();
-                                },
-                                child: const Text("yes")),
-                          ],
-                        ));
-              },
-              icon: const Icon(Icons.logout))
+            icon: const Icon(Icons.logout),
+            onPressed: () {
+              showDialog(
+                context: context,
+                builder: (context) => AlertDialog(
+                  title: const Text("Are you sure you want to logout?"),
+                  content: const Text(
+                    "If you logout, items added to the cart will disappear.",
+                  ),
+                  actions: [
+                    TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: const Text("No"),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        firebase.signOut();
+                        _onLogoutClearCart();
+                        Navigator.of(context).pushReplacement(MaterialPageRoute(
+                            builder: (context) => const Auth()));
+                      },
+                      child: const Text("Yes"),
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
         ],
       ),
       drawer: const DrawerWidget(),
@@ -160,9 +132,10 @@ class _HomeState extends State<Home> {
                   "Hello Fola",
                   textAlign: TextAlign.start,
                   style: TextStyle(
-                      color: Colors.black,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 30),
+                    color: Colors.black,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 30,
+                  ),
                 ),
                 SizedBox(width: 10),
                 Icon(Icons.card_giftcard, color: Colors.orange, size: 36),
@@ -177,17 +150,13 @@ class _HomeState extends State<Home> {
                 children: [
                   cardView("20% off During The \nWeekend",
                       "assets/images/image.png", Colors.orange),
-                  const SizedBox(
-                    width: 10,
-                  ),
+                  const SizedBox(width: 10),
                   cardView("80% off On Smart \nWatch",
                       "assets/images/watch.png", Colors.blue),
                 ],
               ),
             ),
-            const SizedBox(
-              height: 10,
-            ),
+            const SizedBox(height: 10),
             Padding(
               padding: const EdgeInsets.only(right: 8),
               child: Row(
@@ -196,9 +165,10 @@ class _HomeState extends State<Home> {
                   const Text(
                     "Top Products",
                     style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black,
-                        fontSize: 25),
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                      fontSize: 25,
+                    ),
                   ),
                   TextButton(
                     onPressed: () {},
@@ -210,54 +180,128 @@ class _HomeState extends State<Home> {
                 ],
               ),
             ),
-            const Expanded(
-              child: ItemWidget(),
-            ),
+            Expanded(child: itemWidget()),
           ],
+        ),
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _selectedPage,
+        onTap: onSelect,
+        items: const [
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.shopping_cart), label: 'Cart'),
+          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Account'),
+        ],
+      ),
+    );
+  }
+
+  Widget cardView(String heading, String imgUrl, Color cardColor) {
+    return Card(
+      color: cardColor,
+      child: Row(
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(top: 10, left: 15, right: 20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  heading,
+                  textAlign: TextAlign.start,
+                  style: const TextStyle(
+                    fontSize: 20,
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Row(
+                  children: [
+                    ElevatedButton(
+                      onPressed: () {},
+                      child: const Text("Get Now"),
+                    ),
+                    const SizedBox(width: 10),
+                    Image.asset(
+                      imgUrl,
+                      height: 100,
+                      alignment: Alignment.bottomLeft,
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget itemWidget() {
+    return Expanded(
+      child: GridView.builder(
+        gridDelegate:
+            const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
+        itemBuilder: (ctx, item) => itemView(
+            itemList[item].title,
+            itemList[item].imgUrl,
+            itemList[item].price,
+            itemList[item].discount,
+            itemList[item].description),
+        itemCount: itemList.length,
+      ),
+    );
+  }
+
+  Widget itemView(String title, String imgUrl, String price, String discount,
+      String description) {
+    return Skeletonizer(
+      enabled: _isloading,
+      child: GestureDetector(
+        onTap: () => {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => Descriptionscreen(
+                    title: title,
+                    description: description,
+                    price: price,
+                    imgUrl: imgUrl)),
+          ),
+        },
+        child: Card(
+          color: Colors.white,
+          elevation: 10,
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Text(
+                  discount,
+                  style: const TextStyle(
+                      fontSize: 16,
+                      color: Colors.green,
+                      fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 2),
+                Expanded(
+                  child: Image.network(imgUrl),
+                ),
+                const SizedBox(height: 3),
+                Text(title,
+                    style: const TextStyle(
+                        fontWeight: FontWeight.bold, fontSize: 18),
+                    textAlign: TextAlign.start,
+                    overflow: TextOverflow.ellipsis),
+                const SizedBox(height: 3),
+                Text("INR $price", style: const TextStyle(fontSize: 15)),
+              ],
+            ),
+          ),
         ),
       ),
     );
   }
-}
-
-Widget cardView(String heading, String imgUrl, Color cardColor) {
-  return Card(
-    color: cardColor,
-    child: Row(
-      children: [
-        Padding(
-          padding: const EdgeInsets.only(top: 10, left: 15, right: 20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                heading,
-                textAlign: TextAlign.start,
-                style: const TextStyle(
-                    fontSize: 20,
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold),
-              ),
-              Row(
-                children: [
-                  ElevatedButton(
-                    onPressed: () {},
-                    child: const Text("Get Now"),
-                  ),
-                  const SizedBox(
-                    width: 10,
-                  ),
-                  Image.asset(
-                    imgUrl,
-                    height: 100,
-                    alignment: Alignment.bottomLeft,
-                  ),
-                ],
-              )
-            ],
-          ),
-        )
-      ],
-    ),
-  );
 }

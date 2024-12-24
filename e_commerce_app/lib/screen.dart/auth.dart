@@ -1,11 +1,13 @@
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:e_commerce_app/screen.dart/home.dart';
 import 'package:e_commerce_app/widget/profile_image_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 final firebase = FirebaseAuth.instance;
+final firestore = FirebaseFirestore.instance;
 
 class Auth extends StatefulWidget {
   const Auth({super.key});
@@ -35,6 +37,8 @@ class _AuthState extends State<Auth> {
       if (_isLogin) {
         var userCred = await firebase.signInWithEmailAndPassword(
             email: _enteredEmail, password: _enteredPassword);
+        Navigator.of(context).pushReplacement(
+            MaterialPageRoute(builder: (context) => const Home()));
         print(userCred);
       } else {
         var userCred = await firebase.createUserWithEmailAndPassword(
@@ -55,6 +59,26 @@ class _AuthState extends State<Auth> {
           "user_email": _enteredEmail,
           // "user_image": imageUrl
         });
+
+        User? user = firebase.currentUser;
+
+        if (user != null) {
+          DocumentReference userRef =
+              firestore.collection('users').doc(user.uid);
+
+          userRef.set({
+            'name': _enteredUsername,
+            'email': _enteredEmail,
+            'uid': user.uid,
+          }, SetOptions(merge: true));
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text("User not logged in")),
+          );
+        }
+
+        Navigator.of(context).pushReplacement(
+            MaterialPageRoute(builder: (context) => const Home()));
       }
     } on FirebaseAuthException catch (error) {
       ScaffoldMessenger.of(context).showSnackBar(

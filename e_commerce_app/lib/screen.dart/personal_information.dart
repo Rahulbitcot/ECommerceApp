@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 
 final firebase = FirebaseAuth.instance;
 final firestore = FirebaseFirestore.instance;
@@ -22,6 +23,7 @@ class _PersonalInformationState extends State<PersonalInformation> {
   String email = "Set your email";
   String number = "Set your number";
   String address = "Set your address";
+  bool isLoading = true;
 
   final _formKey = GlobalKey<FormState>();
 
@@ -75,14 +77,18 @@ class _PersonalInformationState extends State<PersonalInformation> {
           _emailController.text = email;
           _numberController.text = number;
           _addressController.text = address;
+
+          isLoading = false;
         });
       } else {
         ScaffoldMessenger.of(context)
             .showSnackBar(const SnackBar(content: Text("User data not found")));
+        isLoading = false;
       }
     } else {
       ScaffoldMessenger.of(context)
           .showSnackBar(const SnackBar(content: Text("User not logged in")));
+      isLoading = false;
     }
   }
 
@@ -90,6 +96,7 @@ class _PersonalInformationState extends State<PersonalInformation> {
   void initState() {
     super.initState();
     setUserInfo();
+    isLoading = false;
   }
 
   @override
@@ -109,97 +116,102 @@ class _PersonalInformationState extends State<PersonalInformation> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(20),
-        child: Column(
-          children: [
-            Expanded(
-              child: Form(
-                key: _formKey,
-                child: Column(
-                  children: [
-                    TextFormField(
-                      controller: _nameController..text = name,
-                      decoration: const InputDecoration(label: Text("Name")),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return "Name cannot be empty";
-                        }
+        child: Skeletonizer(
+          enabled: isLoading,
+          child: Column(
+            children: [
+              Expanded(
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    children: [
+                      TextFormField(
+                        controller: _nameController..text = name,
+                        decoration: const InputDecoration(label: Text("Name")),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return "Name cannot be empty";
+                          }
 
-                        if (value.length < 2) {
-                          return "Enter Valid Name";
-                        }
+                          if (value.length < 2) {
+                            return "Enter Valid Name";
+                          }
 
-                        return null;
-                      },
-                    ),
-                    const SizedBox(height: 30),
-                    TextFormField(
-                      controller: _numberController..text = number,
-                      decoration: const InputDecoration(label: Text("Number")),
-                      keyboardType: TextInputType.number,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return "Phone number cannot be empty";
-                        }
-                        if (value.length != 10) {
-                          return "Phone number must be of 10 digits";
-                        }
-                        final regex = RegExp(r'[a-zA-Z]');
-                        if (regex.hasMatch(value)) {
-                          return "Enter a valid number (no letters allowed)";
-                        }
-                        return null;
-                      },
-                    ),
-                    const SizedBox(height: 30),
-                    TextFormField(
-                      controller: _emailController..text = email,
-                      decoration: const InputDecoration(label: Text("Email")),
-                      keyboardType: TextInputType.emailAddress,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return "Email cannot be empty";
-                        }
-                        if (!value.contains('@')) {
-                          return "Enter Valid Email";
-                        }
-                        if (value.length < 5) {
-                          return "Enter Valid Email";
-                        }
+                          return null;
+                        },
+                      ),
+                      const SizedBox(height: 30),
+                      TextFormField(
+                        controller: _numberController..text = number,
+                        decoration:
+                            const InputDecoration(label: Text("Number")),
+                        keyboardType: TextInputType.number,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return "Phone number cannot be empty";
+                          }
+                          if (value.length != 10) {
+                            return "Phone number must be of 10 digits";
+                          }
+                          final regex = RegExp(r'[a-zA-Z]');
+                          if (regex.hasMatch(value)) {
+                            return "Enter a valid number (no letters allowed)";
+                          }
+                          return null;
+                        },
+                      ),
+                      const SizedBox(height: 30),
+                      TextFormField(
+                        controller: _emailController..text = email,
+                        decoration: const InputDecoration(label: Text("Email")),
+                        keyboardType: TextInputType.emailAddress,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return "Email cannot be empty";
+                          }
+                          if (!value.contains('@')) {
+                            return "Enter Valid Email";
+                          }
+                          if (value.length < 5) {
+                            return "Enter Valid Email";
+                          }
 
-                        return null;
-                      },
-                    ),
-                    const SizedBox(height: 30),
-                    TextFormField(
-                      controller: _addressController..text = address,
-                      decoration: const InputDecoration(label: Text("Address")),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return "Address cannot be empty";
-                        }
+                          return null;
+                        },
+                      ),
+                      const SizedBox(height: 30),
+                      TextFormField(
+                        controller: _addressController..text = address,
+                        decoration:
+                            const InputDecoration(label: Text("Address")),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return "Address cannot be empty";
+                          }
 
-                        if (value.length < 5) {
-                          return "Enter Valid Address";
-                        }
-                        return null;
-                      },
-                    ),
-                  ],
+                          if (value.length < 5) {
+                            return "Enter Valid Address";
+                          }
+                          return null;
+                        },
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            ),
-            ElevatedButton(
-              onPressed: saveUserInfo,
-              style: const ButtonStyle(
-                backgroundColor: WidgetStatePropertyAll(Colors.amber),
-                fixedSize: WidgetStatePropertyAll(Size(double.maxFinite, 60)),
+              ElevatedButton(
+                onPressed: saveUserInfo,
+                style: const ButtonStyle(
+                  backgroundColor: WidgetStatePropertyAll(Colors.amber),
+                  fixedSize: WidgetStatePropertyAll(Size(double.maxFinite, 60)),
+                ),
+                child: const Text(
+                  "Save profile information",
+                  style: TextStyle(color: Colors.black, fontSize: 20),
+                ),
               ),
-              child: const Text(
-                "Save profile information",
-                style: TextStyle(color: Colors.black, fontSize: 20),
-              ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
