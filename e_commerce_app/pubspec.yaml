@@ -45,7 +45,7 @@ dependencies:
   firebase_storage: ^12.3.6
   cloud_firestore: ^5.5.1
   skeletonizer: ^1.4.2
-  # flutter_credit_card: ^4.0.1
+  flutter_credit_card: ^4.0.1
   
 
 dev_dependencies:

@@ -6,6 +6,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
+import '../screen.dart/add_credit_card.dart';
+
 final firebase = FirebaseAuth.instance;
 final firestore = FirebaseFirestore.instance;
 
@@ -105,10 +107,10 @@ class _DrawerWidgetState extends State<DrawerWidget> {
           ),
           ListTile(
             onTap: () {
-              // Navigator.push(
-              //     context,
-              //     MaterialPageRoute(
-              //         builder: (context) => CreditCardFormPage()));
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => CreditCardFormPage()));
             },
             iconColor: Colors.black,
             splashColor: const Color.fromARGB(68, 253, 206, 0),

@@ -92,12 +92,14 @@ class _PersonalInformationState extends State<PersonalInformation> {
       isLoading = false;
 
     }
+
+
   }
 
   @override
   void initState() {
     super.initState();
-    setUserInfo();
+      setUserInfo();
   }
 
   @override

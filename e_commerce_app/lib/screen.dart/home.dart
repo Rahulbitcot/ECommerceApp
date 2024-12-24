@@ -70,7 +70,7 @@ class _HomeState extends State<Home> {
         });
         return productList;
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Failed to laod data , please try again alter ")));
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Failed to load products, please try again later ")));
         throw Exception('Failed to load products');
       }
     } catch (e) {
