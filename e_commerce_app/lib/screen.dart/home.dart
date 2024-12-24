@@ -28,7 +28,9 @@ class _HomeState extends State<Home> {
   @override
   void initState() {
     super.initState();
-    getProduct();
+    setState(() {
+      getProduct();
+    });
   }
 
   void onSelect(int currentIndex) {
@@ -68,6 +70,7 @@ class _HomeState extends State<Home> {
         });
         return productList;
       } else {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Failed to laod data , please try again alter ")));
         throw Exception('Failed to load products');
       }
     } catch (e) {

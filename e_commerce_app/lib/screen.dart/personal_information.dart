@@ -19,10 +19,10 @@ class _PersonalInformationState extends State<PersonalInformation> {
   final TextEditingController _numberController = TextEditingController();
   final TextEditingController _addressController = TextEditingController();
 
-  String name = "Set your name";
-  String email = "Set your email";
-  String number = "Set your number";
-  String address = "Set your address";
+  String name = "NA";
+  String email = "NA";
+  String number = "NA";
+  String address = "NA";
   bool isLoading = true;
 
   final _formKey = GlobalKey<FormState>();
@@ -77,18 +77,20 @@ class _PersonalInformationState extends State<PersonalInformation> {
           _emailController.text = email;
           _numberController.text = number;
           _addressController.text = address;
-
           isLoading = false;
+
         });
       } else {
         ScaffoldMessenger.of(context)
             .showSnackBar(const SnackBar(content: Text("User data not found")));
         isLoading = false;
+
       }
     } else {
       ScaffoldMessenger.of(context)
           .showSnackBar(const SnackBar(content: Text("User not logged in")));
       isLoading = false;
+
     }
   }
 
@@ -96,7 +98,6 @@ class _PersonalInformationState extends State<PersonalInformation> {
   void initState() {
     super.initState();
     setUserInfo();
-    isLoading = false;
   }
 
   @override
