@@ -73,40 +73,47 @@ class _HomeState extends State<Home> {
       ),
       drawer: const DrawerWidget(),
       body: bodyWidget(),
-
     );
   }
 
   Widget bodyWidget() {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          const Row(
-            children: [
-              Text(
-                "Hello Fola",
-                textAlign: TextAlign.start,
-                style: TextStyle(
-                  color: Colors.black,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 30,
-                ),
+    return NestedScrollView(
+      headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+        return [
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  const Row(
+                    children: [
+                      Text(
+                        "Hello Fola",
+                        textAlign: TextAlign.start,
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 30,
+                        ),
+                      ),
+                      SizedBox(width: 10),
+                      Icon(Icons.card_giftcard, color: Colors.orange, size: 36),
+                    ],
+                  ),
+                  const SizedBox(height: 5),
+                  const Text("Let's Start Shopping", style: TextStyle(fontSize: 16)),
+                  const SizedBox(height: 20),
+                  trendingProduct(),
+                  const SizedBox(height: 10),
+                  topProductListView(),
+                ],
               ),
-              SizedBox(width: 10),
-              Icon(Icons.card_giftcard, color: Colors.orange, size: 36),
-            ],
+            ),
           ),
-          const SizedBox(height: 5),
-          const Text("Let's Start Shopping", style: TextStyle(fontSize: 16)),
-          const SizedBox(height: 20),
-          trendingProduct(),
-          const SizedBox(height: 10),
-          topProductListView(),
-          Expanded(child: itemWidget()),
-        ],
-      ),
+        ];
+      },
+      body: itemWidget(),
     );
   }
 
@@ -228,18 +235,17 @@ class _HomeState extends State<Home> {
   }
 
   Widget itemWidget() {
-    return Expanded(
-      child: GridView.builder(
-        gridDelegate:
-            const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
-        itemBuilder: (ctx, item) => itemView(
-            itemList[item].title,
-            itemList[item].imgUrl,
-            itemList[item].price,
-            itemList[item].discount,
-            itemList[item].description),
-        itemCount: itemList.length,
-      ),
+    return GridView.builder(
+      physics: const NeverScrollableScrollPhysics(),
+      gridDelegate:
+          const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
+      itemBuilder: (ctx, item) => itemView(
+          itemList[item].title,
+          itemList[item].imgUrl,
+          itemList[item].price,
+          itemList[item].discount,
+          itemList[item].description),
+      itemCount: itemList.length,
     );
   }
 
