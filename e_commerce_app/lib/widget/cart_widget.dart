@@ -1,4 +1,5 @@
 import 'dart:convert';
+
 import 'package:e_commerce_app/models/cart.dart';
 import 'package:e_commerce_app/screen.dart/order_screen.dart';
 import 'package:flutter/material.dart';
@@ -84,7 +85,7 @@ class _CartWidgetState extends State<CartWidget> {
                       "Total :",
                       style: TextStyle(
                         color: Color.fromARGB(255, 72, 71, 71),
-                        fontSize: 24,
+                        fontSize: 20,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -92,7 +93,7 @@ class _CartWidgetState extends State<CartWidget> {
                       "INR: ${_calculateTotal()}",
                       style: const TextStyle(
                         color: Colors.orange,
-                        fontSize: 24,
+                        fontSize: 20,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -100,71 +101,7 @@ class _CartWidgetState extends State<CartWidget> {
                 ),
                 Padding(
                   padding: const EdgeInsets.all(10),
-                  child: ElevatedButton(
-                    style: const ButtonStyle(
-                      backgroundColor: MaterialStatePropertyAll(Colors.amber),
-                      fixedSize:
-                          MaterialStatePropertyAll(Size(double.maxFinite, 60)),
-                    ),
-                    onPressed: () {
-                      showDialog(
-                          context: context,
-                          builder: (context) => AlertDialog(
-                                title: Column(
-                                  children: [
-                                    const Text(
-                                      "Order Placed..!",
-                                      style: TextStyle(
-                                          fontSize: 30,
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                    const SizedBox(
-                                      height: 5,
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.all(10.0),
-                                      child: Text(
-                                        "Want to continue your orders with amount INR ${_calculateTotal()}",
-                                        style: const TextStyle(
-                                          fontSize: 20,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                actions: [
-                                  TextButton(
-                                      onPressed: () {
-                                        Navigator.of(context).pop();
-                                      },
-                                      child: const Text(
-                                        "no",
-                                        style: const TextStyle(
-                                          fontSize: 24,
-                                        ),
-                                      )),
-                                  TextButton(
-                                      onPressed: () {
-                                        Navigator.pushReplacement(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (context) =>
-                                                    const OrderScreen()));
-                                      },
-                                      child: const Text(
-                                        "yes",
-                                        style: TextStyle(
-                                          fontSize: 24,
-                                        ),
-                                      )),
-                                ],
-                              ));
-                    },
-                    child: const Text(
-                      "Buy Now",
-                      style: TextStyle(color: Colors.black, fontSize: 20),
-                    ),
-                  ),
+                  child: buyNowButtonWidget(),
                 ),
               ],
             ),
@@ -189,8 +126,8 @@ class _CartWidgetState extends State<CartWidget> {
             margin: const EdgeInsets.all(10),
             padding: const EdgeInsets.all(10),
             child: SizedBox(
-              width: 80,
-              height: 80,
+              width: 50,
+              height: 50,
               child: Image.network(imgUrl),
             ),
           ),
@@ -203,7 +140,7 @@ class _CartWidgetState extends State<CartWidget> {
                   style: const TextStyle(
                     color: Colors.black,
                     fontWeight: FontWeight.bold,
-                    fontSize: 20,
+                    fontSize: 16,
                   ),
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
@@ -240,6 +177,71 @@ class _CartWidgetState extends State<CartWidget> {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget buyNowButtonWidget() {
+    return ElevatedButton(
+      style: const ButtonStyle(
+        backgroundColor: MaterialStatePropertyAll(Colors.amber),
+        fixedSize: MaterialStatePropertyAll(Size(double.maxFinite, 30)),
+      ),
+      onPressed: () {
+        showDialog(
+            context: context,
+            builder: (context) => AlertDialog(
+                  title: Column(
+                    children: [
+                      const Text(
+                        "Order Placed..!",
+                        style: TextStyle(
+                            fontSize: 30, fontWeight: FontWeight.bold),
+                      ),
+                      const SizedBox(
+                        height: 5,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(10.0),
+                        child: Text(
+                          "Want to continue your orders with amount INR ${_calculateTotal()}",
+                          style: const TextStyle(
+                            fontSize: 20,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  actions: [
+                    TextButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                        child: const Text(
+                          "no",
+                          style: const TextStyle(
+                            fontSize: 24,
+                          ),
+                        )),
+                    TextButton(
+                        onPressed: () {
+                          Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => const OrderScreen()));
+                        },
+                        child: const Text(
+                          "yes",
+                          style: TextStyle(
+                            fontSize: 24,
+                          ),
+                        )),
+                  ],
+                ));
+      },
+      child: const Text(
+        "Buy Now",
+        style: TextStyle(color: Colors.black, fontSize: 16),
       ),
     );
   }

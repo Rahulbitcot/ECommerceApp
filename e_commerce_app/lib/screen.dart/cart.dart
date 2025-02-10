@@ -16,7 +16,7 @@ class _CartState extends State<Cart> {
         title: const Center(
           child: Text(
             "My Cart",
-            style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold),
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
           ),
         ),
       ),

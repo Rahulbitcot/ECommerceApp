@@ -117,7 +117,6 @@ class _HomeState extends State<Home> {
     );
   }
 
-
   Widget logoutWidget() {
     return IconButton(
       icon: const Icon(Icons.logout),

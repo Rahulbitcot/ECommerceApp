@@ -1,4 +1,5 @@
 import 'dart:convert';
+
 import 'package:e_commerce_app/models/cart.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -78,82 +79,87 @@ class _DescriptionscreenState extends State<Descriptionscreen> {
       ),
       body: Column(
         children: [
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.all(20),
-              child: SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Image.network(
-                      widget.imgUrl,
-                      height: 300,
-                    ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    Text(
-                      widget.title,
-                      style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 20,
-                          color: Colors.black),
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    Text(
-                      "INR: ${widget.price}",
-                      style: const TextStyle(fontSize: 20),
-                    ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    const Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          "About",
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black,
-                              fontSize: 20),
-                        ),
-                        Text(
-                          "Available in Stock",
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black,
-                              fontSize: 20),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    Text(widget.description),
-                  ],
-                ),
-              ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(16),
-            child: ElevatedButton(
-                style: const ButtonStyle(
-                  backgroundColor: WidgetStatePropertyAll(Colors.amber),
-                  fixedSize: WidgetStatePropertyAll(Size(double.maxFinite, 60)),
-                ),
-                onPressed: _sharedPref,
-                child: Text(
-                  btnText,
-                  style: const TextStyle(color: Colors.black, fontSize: 20),
-                )),
-          ),
-          const SizedBox(
-            height: 20,
-          ),
+          productDescription(),
+          buttonAddToCart(),
         ],
+      ),
+    );
+  }
+
+  Widget buttonAddToCart() {
+    return Padding(
+      padding: const EdgeInsets.all(16),
+      child: ElevatedButton(
+          style: const ButtonStyle(
+            backgroundColor: WidgetStatePropertyAll(Colors.amber),
+            fixedSize: WidgetStatePropertyAll(Size(double.maxFinite, 30)),
+          ),
+          onPressed: _sharedPref,
+          child: Text(
+            btnText,
+            style: const TextStyle(color: Colors.black, fontSize: 18),
+          )),
+    );
+  }
+
+  Widget productDescription() {
+    return Expanded(
+      child: Padding(
+        padding: const EdgeInsets.all(20),
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Image.network(
+                widget.imgUrl,
+                height: 300,
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              Text(
+                widget.title,
+                style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 20,
+                    color: Colors.black),
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              Text(
+                "INR: ${widget.price}",
+                style: const TextStyle(fontSize: 20),
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              const Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    "About",
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                        fontSize: 20),
+                  ),
+                  Text(
+                    "Available in Stock",
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                        fontSize: 20),
+                  ),
+                ],
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              Text(widget.description),
+            ],
+          ),
+        ),
       ),
     );
   }
