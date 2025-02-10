@@ -59,95 +59,118 @@ class _DrawerWidgetState extends State<DrawerWidget> {
     return Drawer(
       backgroundColor: const Color.fromARGB(255, 240, 240, 239),
       child: Column(
-        children: [
-          Skeletonizer(
-            enabled: _isLoading,
-            child: DrawerHeader(
-              child: Container(
-                padding: const EdgeInsets.only(
-                    bottom: 10, top: 10, left: 15, right: 10),
-                decoration: BoxDecoration(
-                  color: const Color.fromARGB(68, 253, 206, 0),
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                width: double.infinity,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Expanded(child: Image.asset("assets/images/sleep.png")),
-                    const SizedBox(height: 10),
-                    Text(
-                      name,
-                      style: const TextStyle(
-                          color: Color.fromARGB(255, 0, 0, 0),
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold),
-                    ),
-                    Text(
-                      email,
-                      style: const TextStyle(color: Colors.black, fontSize: 16),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
+        children: <Widget>[
+          widgetHeader(),
           const SizedBox(height: 10),
-          ListTile(
-            onTap: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const PersonalInformation()));
-            },
-            iconColor: Colors.black,
-            splashColor: const Color.fromARGB(68, 253, 206, 0),
-            leading: const Icon(Icons.person),
-            title: const Text("Personal Information"),
-          ),
-          ListTile(
-            onTap: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => CreditCardFormPage()));
-            },
-            iconColor: Colors.black,
-            splashColor: const Color.fromARGB(68, 253, 206, 0),
-            leading: const Icon(Icons.credit_card),
-            title: const Text("Credit Card Info"),
-          ),
-          ListTile(
-            onTap: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => const OrderScreen()));
-            },
-            iconColor: Colors.black,
-            splashColor: const Color.fromARGB(68, 253, 206, 0),
-            leading: const Icon(Icons.shop),
-            title: const Text("your Order"),
-          ),
-          ListTile(
-            onTap: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => const Setting()));
-            },
-            iconColor: Colors.black,
-            splashColor: const Color.fromARGB(68, 253, 206, 0),
-            leading: const Icon(Icons.settings),
-            title: const Text("Setting"),
-          ),
-          ListTile(
-            onTap: () {},
-            iconColor: Colors.black,
-            splashColor: const Color.fromARGB(68, 253, 206, 0),
-            leading: const Icon(Icons.info),
-            title: const Text("About"),
-          ),
+          listTilePersonalInformation(),
+          listTileCreditCard(),
+          listTileYourOrder(),
+          listTileSetting(),
+          listTileAbout(),
           const Spacer(),
-          const Text("Version 1.0"),
-          const SizedBox(height: 10)
+          const Padding(
+              padding: EdgeInsets.all(10.0), // Adjust padding as needed
+              child: Text("Version 1.0")),
         ],
+      ),
+    );
+  }
+
+  Widget listTilePersonalInformation() {
+    return ListTile(
+      onTap: () {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => const PersonalInformation()));
+      },
+      iconColor: Colors.black,
+      splashColor: const Color.fromARGB(68, 253, 206, 0),
+      leading: const Icon(Icons.person),
+      title: const Text("Personal Information"),
+    );
+  }
+
+  Widget listTileCreditCard() {
+    return ListTile(
+      onTap: () {
+        Navigator.push(context,
+            MaterialPageRoute(builder: (context) => CreditCardFormPage()));
+      },
+      iconColor: Colors.black,
+      splashColor: const Color.fromARGB(68, 253, 206, 0),
+      leading: const Icon(Icons.credit_card),
+      title: const Text("Credit Card Info"),
+    );
+  }
+
+  Widget listTileYourOrder() {
+    return ListTile(
+      onTap: () {
+        Navigator.push(context,
+            MaterialPageRoute(builder: (context) => const OrderScreen()));
+      },
+      iconColor: Colors.black,
+      splashColor: const Color.fromARGB(68, 253, 206, 0),
+      leading: const Icon(Icons.shop),
+      title: const Text("your Order"),
+    );
+  }
+
+  Widget listTileSetting() {
+    return ListTile(
+      onTap: () {
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => const Setting()));
+      },
+      iconColor: Colors.black,
+      splashColor: const Color.fromARGB(68, 253, 206, 0),
+      leading: const Icon(Icons.settings),
+      title: const Text("Setting"),
+    );
+  }
+
+  Widget listTileAbout() {
+    return ListTile(
+      onTap: () {},
+      iconColor: Colors.black,
+      splashColor: const Color.fromARGB(68, 253, 206, 0),
+      leading: const Icon(Icons.info),
+      title: const Text("About"),
+    );
+  }
+
+  Widget widgetHeader() {
+    return Skeletonizer(
+      enabled: _isLoading,
+      child: DrawerHeader(
+        child: Container(
+          padding:
+              const EdgeInsets.only(bottom: 10, top: 10, left: 15, right: 10),
+          decoration: BoxDecoration(
+            color: const Color.fromARGB(68, 253, 206, 0),
+            borderRadius: BorderRadius.circular(20),
+          ),
+          width: double.infinity,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Expanded(child: Image.asset("assets/images/sleep.png")),
+              const SizedBox(height: 10),
+              Text(
+                name,
+                style: const TextStyle(
+                    color: Color.fromARGB(255, 0, 0, 0),
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold),
+              ),
+              Text(
+                email,
+                style: const TextStyle(color: Colors.black, fontSize: 16),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
