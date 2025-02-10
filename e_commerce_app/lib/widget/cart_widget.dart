@@ -196,7 +196,7 @@ class _CartWidgetState extends State<CartWidget> {
                       const Text(
                         "Order Placed..!",
                         style: TextStyle(
-                            fontSize: 30, fontWeight: FontWeight.bold),
+                            fontSize: 16, fontWeight: FontWeight.bold),
                       ),
                       const SizedBox(
                         height: 5,
@@ -206,7 +206,7 @@ class _CartWidgetState extends State<CartWidget> {
                         child: Text(
                           "Want to continue your orders with amount INR ${_calculateTotal()}",
                           style: const TextStyle(
-                            fontSize: 20,
+                            fontSize: 16,
                           ),
                         ),
                       ),
@@ -218,10 +218,9 @@ class _CartWidgetState extends State<CartWidget> {
                           Navigator.of(context).pop();
                         },
                         child: const Text(
-                          "no",
-                          style: const TextStyle(
-                            fontSize: 24,
-                          ),
+                          "Cancel",
+                          style:
+                              const TextStyle(fontSize: 16, color: Colors.red),
                         )),
                     TextButton(
                         onPressed: () {
@@ -231,9 +230,9 @@ class _CartWidgetState extends State<CartWidget> {
                                   builder: (context) => const OrderScreen()));
                         },
                         child: const Text(
-                          "yes",
+                          "Confirm",
                           style: TextStyle(
-                            fontSize: 24,
+                            fontSize: 16,
                           ),
                         )),
                   ],
