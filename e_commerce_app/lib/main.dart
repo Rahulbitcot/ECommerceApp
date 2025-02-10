@@ -1,4 +1,5 @@
 import 'package:e_commerce_app/firebase_options.dart';
+import 'package:e_commerce_app/screen.dart/MainScreen.dart';
 import 'package:e_commerce_app/screen.dart/auth.dart';
 import 'package:e_commerce_app/screen.dart/home.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -44,7 +45,7 @@ class MyApp extends StatelessWidget {
             return const CircularProgressIndicator(color: Colors.blue);
           }
           if (snapshots.hasData) {
-            return const Home();
+            return const MainScreen();
           }
           return const Auth();
         },

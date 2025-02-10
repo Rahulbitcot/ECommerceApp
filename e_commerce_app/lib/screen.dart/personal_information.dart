@@ -78,28 +78,23 @@ class _PersonalInformationState extends State<PersonalInformation> {
           _numberController.text = number;
           _addressController.text = address;
           isLoading = false;
-
         });
       } else {
         ScaffoldMessenger.of(context)
             .showSnackBar(const SnackBar(content: Text("User data not found")));
         isLoading = false;
-
       }
     } else {
       ScaffoldMessenger.of(context)
           .showSnackBar(const SnackBar(content: Text("User not logged in")));
       isLoading = false;
-
     }
-
-
   }
 
   @override
   void initState() {
     super.initState();
-      setUserInfo();
+    setUserInfo();
   }
 
   @override

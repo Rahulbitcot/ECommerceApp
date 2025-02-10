@@ -1,4 +1,5 @@
 import 'dart:convert';
+
 import 'package:e_commerce_app/Data/item_list.dart';
 import 'package:e_commerce_app/models/items.dart';
 import 'package:e_commerce_app/screen.dart/account.dart';
@@ -22,7 +23,6 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  var _selectedPage = 0;
   bool _isloading = true;
 
   @override
@@ -31,29 +31,6 @@ class _HomeState extends State<Home> {
     setState(() {
       getProduct();
     });
-  }
-
-  void onSelect(int currentIndex) {
-    setState(() {
-      _selectedPage = currentIndex;
-    });
-
-    if (_selectedPage == 0) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => const Home()),
-      );
-    } else if (_selectedPage == 1) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => const Cart()),
-      );
-    } else if (_selectedPage == 2) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => const Account()),
-      );
-    }
   }
 
   Future<List<Items>> getProduct() async {
@@ -70,7 +47,8 @@ class _HomeState extends State<Home> {
         });
         return productList;
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Failed to load products, please try again later ")));
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content: Text("Failed to load products, please try again later ")));
         throw Exception('Failed to load products');
       }
     } catch (e) {
@@ -90,111 +68,119 @@ class _HomeState extends State<Home> {
       appBar: AppBar(
         title: const Center(child: Text("Shop here ")),
         actions: [
-          IconButton(
-            icon: const Icon(Icons.logout),
-            onPressed: () {
-              showDialog(
-                context: context,
-                builder: (context) => AlertDialog(
-                  title: const Text("Are you sure you want to logout?"),
-                  content: const Text(
-                    "If you logout, items added to the cart will disappear.",
-                  ),
-                  actions: [
-                    TextButton(
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                      child: const Text("No"),
-                    ),
-                    TextButton(
-                      onPressed: () {
-                        firebase.signOut();
-                        _onLogoutClearCart();
-                        Navigator.of(context).pushReplacement(MaterialPageRoute(
-                            builder: (context) => const Auth()));
-                      },
-                      child: const Text("Yes"),
-                    ),
-                  ],
-                ),
-              );
-            },
-          ),
+          logoutWidget(),
         ],
       ),
       drawer: const DrawerWidget(),
-      body: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            const Row(
-              children: [
-                Text(
-                  "Hello Fola",
-                  textAlign: TextAlign.start,
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 30,
-                  ),
+      body: bodyWidget(),
+
+    );
+  }
+
+  Widget bodyWidget() {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          const Row(
+            children: [
+              Text(
+                "Hello Fola",
+                textAlign: TextAlign.start,
+                style: TextStyle(
+                  color: Colors.black,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 30,
                 ),
-                SizedBox(width: 10),
-                Icon(Icons.card_giftcard, color: Colors.orange, size: 36),
-              ],
-            ),
-            const SizedBox(height: 5),
-            const Text("Let's Start Shopping", style: TextStyle(fontSize: 16)),
-            const SizedBox(height: 20),
-            SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(
-                children: [
-                  cardView("20% off During The \nWeekend",
-                      "assets/images/image.png", Colors.orange),
-                  const SizedBox(width: 10),
-                  cardView("80% off On Smart \nWatch",
-                      "assets/images/watch.png", Colors.blue),
-                ],
               ),
-            ),
-            const SizedBox(height: 10),
-            Padding(
-              padding: const EdgeInsets.only(right: 8),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Text(
-                    "Top Products",
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
-                      fontSize: 25,
-                    ),
-                  ),
-                  TextButton(
-                    onPressed: () {},
-                    child: const Text(
-                      "See All",
-                      style: TextStyle(color: Colors.orange),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Expanded(child: itemWidget()),
-          ],
-        ),
+              SizedBox(width: 10),
+              Icon(Icons.card_giftcard, color: Colors.orange, size: 36),
+            ],
+          ),
+          const SizedBox(height: 5),
+          const Text("Let's Start Shopping", style: TextStyle(fontSize: 16)),
+          const SizedBox(height: 20),
+          trendingProduct(),
+          const SizedBox(height: 10),
+          topProductListView(),
+          Expanded(child: itemWidget()),
+        ],
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _selectedPage,
-        onTap: onSelect,
-        items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.shopping_cart), label: 'Cart'),
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Account'),
+    );
+  }
+
+
+  Widget logoutWidget() {
+    return IconButton(
+      icon: const Icon(Icons.logout),
+      onPressed: () {
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: const Text("Are you sure you want to logout?"),
+            content: const Text(
+              "If you logout, items added to the cart will disappear.",
+            ),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: const Text("No"),
+              ),
+              TextButton(
+                onPressed: () {
+                  firebase.signOut();
+                  _onLogoutClearCart();
+                  Navigator.of(context).pushReplacement(
+                      MaterialPageRoute(builder: (context) => const Auth()));
+                },
+                child: const Text("Yes"),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Widget topProductListView() {
+    return Padding(
+      padding: const EdgeInsets.only(right: 8),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          const Text(
+            "Top Products",
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              color: Colors.black,
+              fontSize: 25,
+            ),
+          ),
+          TextButton(
+            onPressed: () {},
+            child: const Text(
+              "See All",
+              style: TextStyle(color: Colors.orange),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget trendingProduct() {
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Row(
+        children: [
+          cardView("20% off During The \nWeekend", "assets/images/image.png",
+              Colors.orange),
+          const SizedBox(width: 10),
+          cardView("80% off On Smart \nWatch", "assets/images/watch.png",
+              Colors.blue),
         ],
       ),
     );
