@@ -24,27 +24,27 @@ class _DrawerWidgetState extends State<DrawerWidget> {
   bool _isLoading = true;
 
   void setUserInfo() async {
-    User? user = firebase.currentUser;
-
-    if (user != null) {
-      DocumentSnapshot snapshot =
-          await firestore.collection('users').doc(user.uid).get();
-
-      if (snapshot.exists) {
-        setState(() {
-          name = snapshot['name'] ?? "Set your name";
-          email = snapshot['email'] ?? "Set your name";
-          _isLoading = false;
-        });
+    try {
+      User? user = firebase.currentUser;
+      if (user != null) {
+        DocumentSnapshot snapshot = await firestore.collection('users').doc(user.uid).get();
+        if (snapshot.exists) {
+          setState(() {
+            name = snapshot['name'] ?? "Set your name";
+            email = snapshot['email'] ?? "Set your email";
+            _isLoading = false; // Set loading to false after data is retrieved
+          });
+        } else {
+          throw Exception("User data not found");
+        }
       } else {
-        ScaffoldMessenger.of(context)
-            .showSnackBar(const SnackBar(content: Text("User data not found")));
-        _isLoading = false;
+        throw Exception("User not logged in");
       }
-    } else {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(const SnackBar(content: Text("User not logged in")));
-      _isLoading = false;
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.toString())));
+      setState(() {
+        _isLoading = false; // Set loading to false on error
+      });
     }
   }
 
@@ -69,7 +69,7 @@ class _DrawerWidgetState extends State<DrawerWidget> {
           listTileAbout(),
           const Spacer(),
           const Padding(
-              padding: EdgeInsets.all(10.0), // Adjust padding as needed
+              padding: EdgeInsets.all(10.0),
               child: Text("Version 1.0")),
         ],
       ),
@@ -79,10 +79,7 @@ class _DrawerWidgetState extends State<DrawerWidget> {
   Widget listTilePersonalInformation() {
     return ListTile(
       onTap: () {
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => const PersonalInformation()));
+        Navigator.push(context, MaterialPageRoute(builder: (context) => const PersonalInformation()));
       },
       iconColor: Colors.black,
       splashColor: const Color.fromARGB(68, 253, 206, 0),
@@ -94,8 +91,7 @@ class _DrawerWidgetState extends State<DrawerWidget> {
   Widget listTileCreditCard() {
     return ListTile(
       onTap: () {
-        Navigator.push(context,
-            MaterialPageRoute(builder: (context) => CreditCardFormPage()));
+        Navigator.push(context, MaterialPageRoute(builder: (context) => CreditCardFormPage()));
       },
       iconColor: Colors.black,
       splashColor: const Color.fromARGB(68, 253, 206, 0),
@@ -107,21 +103,19 @@ class _DrawerWidgetState extends State<DrawerWidget> {
   Widget listTileYourOrder() {
     return ListTile(
       onTap: () {
-        Navigator.push(context,
-            MaterialPageRoute(builder: (context) => const OrderScreen()));
+        Navigator.push(context, MaterialPageRoute(builder: (context) => const OrderScreen()));
       },
       iconColor: Colors.black,
       splashColor: const Color.fromARGB(68, 253, 206, 0),
       leading: const Icon(Icons.shop),
-      title: const Text("your Order"),
+      title: const Text("Your Order"),
     );
   }
 
   Widget listTileSetting() {
     return ListTile(
       onTap: () {
-        Navigator.push(
-            context, MaterialPageRoute(builder: (context) => const Setting()));
+        Navigator.push(context, MaterialPageRoute(builder: (context) => const Setting()));
       },
       iconColor: Colors.black,
       splashColor: const Color.fromARGB(68, 253, 206, 0),
@@ -145,8 +139,7 @@ class _DrawerWidgetState extends State<DrawerWidget> {
       enabled: _isLoading,
       child: DrawerHeader(
         child: Container(
-          padding:
-              const EdgeInsets.only(bottom: 10, top: 10, left: 15, right: 10),
+          padding: const EdgeInsets.only(bottom: 10, top: 10, left: 15, right: 10),
           decoration: BoxDecoration(
             color: const Color.fromARGB(68, 253, 206, 0),
             borderRadius: BorderRadius.circular(20),
@@ -159,10 +152,7 @@ class _DrawerWidgetState extends State<DrawerWidget> {
               const SizedBox(height: 10),
               Text(
                 name,
-                style: const TextStyle(
-                    color: Color.fromARGB(255, 0, 0, 0),
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold),
+                style: const TextStyle(color: Color.fromARGB(255, 0, 0, 0), fontSize: 16, fontWeight: FontWeight.bold),
               ),
               Text(
                 email,
