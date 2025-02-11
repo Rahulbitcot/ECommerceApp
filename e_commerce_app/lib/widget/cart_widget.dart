@@ -188,55 +188,59 @@ class _CartWidgetState extends State<CartWidget> {
         fixedSize: MaterialStatePropertyAll(Size(double.maxFinite, 30)),
       ),
       onPressed: () {
-        showDialog(
+        if (_calculateTotal() > 0) {
+          showDialog(
             context: context,
             builder: (context) => AlertDialog(
-                  title: Column(
-                    children: [
-                      const Text(
-                        "Order Placed..!",
-                        style: TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.bold),
-                      ),
-                      const SizedBox(
-                        height: 5,
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(10.0),
-                        child: Text(
-                          "Want to continue your orders with amount INR ${_calculateTotal()}",
-                          style: const TextStyle(
-                            fontSize: 16,
-                          ),
-                        ),
-                      ),
-                    ],
+              title: Column(
+                children: [
+                  const Text(
+                    "Order Placed..!",
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                   ),
-                  actions: [
-                    TextButton(
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        },
-                        child: const Text(
-                          "Cancel",
-                          style:
-                              const TextStyle(fontSize: 16, color: Colors.red),
-                        )),
-                    TextButton(
-                        onPressed: () {
-                          Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => const OrderScreen()));
-                        },
-                        child: const Text(
-                          "Confirm",
-                          style: TextStyle(
-                            fontSize: 16,
-                          ),
-                        )),
-                  ],
-                ));
+                  const SizedBox(
+                    height: 5,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: Text(
+                      "Want to continue your orders with amount INR ${_calculateTotal()}",
+                      style: const TextStyle(
+                        fontSize: 16,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              actions: [
+                TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: const Text(
+                      "Cancel",
+                      style: const TextStyle(fontSize: 16, color: Colors.red),
+                    )),
+                TextButton(
+                    onPressed: () {
+                      Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const OrderScreen()));
+                    },
+                    child: const Text(
+                      "Confirm",
+                      style: TextStyle(
+                        fontSize: 16,
+                      ),
+                    )),
+              ],
+            ),
+          );
+        } else {
+          ScaffoldMessenger.of(context)
+              .showSnackBar(const SnackBar(content: Text("Cart Is empty")));
+        }
       },
       child: const Text(
         "Buy Now",

@@ -17,15 +17,20 @@ class _CreditCardFormPageState extends State<CreditCardFormPage> {
   String cardHolderName = '';
   String cvvCode = '';
 
+  TextEditingController cardNumberController = TextEditingController();
+  TextEditingController expiryDateController = TextEditingController();
+  TextEditingController cardHolderNameController = TextEditingController();
+  TextEditingController cvvCodeController = TextEditingController();
+
   final _formKey = GlobalKey<FormState>();
   GlobalKey<FormFieldState<String>> cardNumberKey =
-  GlobalKey<FormFieldState<String>>();
+      GlobalKey<FormFieldState<String>>();
   GlobalKey<FormFieldState<String>> cvvCodeKey =
-  GlobalKey<FormFieldState<String>>();
+      GlobalKey<FormFieldState<String>>();
   GlobalKey<FormFieldState<String>> expiryDateKey =
-  GlobalKey<FormFieldState<String>>();
+      GlobalKey<FormFieldState<String>>();
   GlobalKey<FormFieldState<String>> cardHolderKey =
-  GlobalKey<FormFieldState<String>>();
+      GlobalKey<FormFieldState<String>>();
 
   void onSubmit() {
     if (_formKey.currentState!.validate()) {
@@ -48,27 +53,28 @@ class _CreditCardFormPageState extends State<CreditCardFormPage> {
     }
   }
 
+
+  @override
+  void dispose() {
+    cardNumberController.dispose();
+    expiryDateController.dispose();
+    cardHolderNameController.dispose();
+    cvvCodeController.dispose();
+    super.dispose();
+  }
+
   void setCardInfo() async {
     User? user = firebase.currentUser;
-
     if (user != null) {
-      DocumentSnapshot snapshot =
-      await firestore.collection('users').doc(user.uid).get();
-
+      DocumentSnapshot snapshot = await firestore.collection('users').doc(user.uid).get();
       if (snapshot.exists) {
         setState(() {
-          cardNumber = snapshot['cardNumber'];
-          expiryDate = snapshot['expiryDate'];
-          cvvCode = snapshot['cvvCode'];
-          cardHolderName = snapshot['cardHolderName'];
+          cardNumberController.text = snapshot['cardNumber'] ?? '';
+          expiryDateController.text = snapshot['expiryDate'] ?? '';
+          cardHolderNameController.text = snapshot['cardHolderName'] ?? '';
+          cvvCodeController.text = snapshot['cvvCode'] ?? '';
         });
-      } else {
-        ScaffoldMessenger.of(context)
-            .showSnackBar(const SnackBar(content: Text("Card data not found")));
       }
-    } else {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(const SnackBar(content: Text("User not logged in")));
     }
   }
 
@@ -130,11 +136,11 @@ class _CreditCardFormPageState extends State<CreditCardFormPage> {
             ),
             const SizedBox(height: 20),
             CreditCardForm(
+              cardNumber: cardNumberController.text,
+              expiryDate: expiryDateController.text,
+              cardHolderName: cardHolderNameController.text,
+              cvvCode: cvvCodeController.text,
               formKey: _formKey,
-              cardNumber: cardNumber,
-              expiryDate: expiryDate,
-              cardHolderName: cardHolderName,
-              cvvCode: cvvCode,
               cardNumberKey: cardNumberKey,
               cvvCodeKey: cvvCodeKey,
               expiryDateKey: expiryDateKey,
@@ -180,10 +186,8 @@ class _CreditCardFormPageState extends State<CreditCardFormPage> {
                 }
                 return null;
               },
-              onFormComplete: () {
-                onSubmit();
-              },
-              autovalidateMode: AutovalidateMode.always,
+              onFormComplete: () {},
+              autovalidateMode: AutovalidateMode.disabled,
               disableCardNumberAutoFillHints: false,
               inputConfiguration: const InputConfiguration(
                 cardNumberDecoration: InputDecoration(
@@ -209,42 +213,36 @@ class _CreditCardFormPageState extends State<CreditCardFormPage> {
                   labelText: 'Card Holder',
                   labelStyle: TextStyle(color: Colors.white, fontSize: 20),
                 ),
-                cardNumberTextStyle: TextStyle(
-                  fontSize: 20,
-                  color: Colors.white,
-                ),
-                cardHolderTextStyle: TextStyle(
-                  fontSize: 20,
-                  color: Colors.white,
-                ),
-                expiryDateTextStyle: TextStyle(
-                  fontSize: 20,
-                  color: Colors.white,
-                ),
-                cvvCodeTextStyle: TextStyle(
-                  fontSize: 20,
-                  color: Colors.white,
-                ),
+                cardNumberTextStyle:
+                    TextStyle(fontSize: 20, color: Colors.white),
+                cardHolderTextStyle:
+                    TextStyle(fontSize: 20, color: Colors.white),
+                expiryDateTextStyle:
+                    TextStyle(fontSize: 20, color: Colors.white),
+                cvvCodeTextStyle: TextStyle(fontSize: 20, color: Colors.white),
               ),
             ),
             const SizedBox(height: 20),
-            Padding(
-              padding: const EdgeInsets.all(16),
-              child: TextButton(
-                  style: const ButtonStyle(
-                    backgroundColor: MaterialStatePropertyAll(Colors.amber),
-                    fixedSize:
-                    MaterialStatePropertyAll(Size(double.maxFinite, 60)),
-                  ),
-                  onPressed: onSubmit,
-                  child: const Text(
-                    "Validate",
-                    style: TextStyle(color: Colors.black, fontSize: 20),
-                  )),
-            ),
+            widgetButtonValidate(),
           ],
         ),
       ),
+    );
+  }
+
+  Widget widgetButtonValidate() {
+    return Padding(
+      padding: const EdgeInsets.all(16),
+      child: TextButton(
+          style: const ButtonStyle(
+            backgroundColor: MaterialStatePropertyAll(Colors.amber),
+            fixedSize: MaterialStatePropertyAll(Size(double.maxFinite, 30)),
+          ),
+          onPressed: onSubmit,
+          child: const Text(
+            "Validate",
+            style: TextStyle(color: Colors.black, fontSize: 16),
+          )),
     );
   }
 }
