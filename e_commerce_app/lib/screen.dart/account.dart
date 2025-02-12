@@ -60,19 +60,16 @@ class _AccountState extends State<Account> {
           cvvCode = snapshot['cvvCode'];
           cardHolderName = snapshot['cardHolderName'];
           isLoading = false;
-
         });
       } else {
         ScaffoldMessenger.of(context)
             .showSnackBar(const SnackBar(content: Text("User data not found")));
         isLoading = false;
-
       }
     } else {
       ScaffoldMessenger.of(context)
           .showSnackBar(const SnackBar(content: Text("User not logged in")));
       isLoading = false;
-
     }
   }
 
@@ -89,93 +86,126 @@ class _AccountState extends State<Account> {
     return Scaffold(
       appBar: AppBar(title: const Text("Account Information")),
       body: Padding(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.all(10),
         child: Skeletonizer(
           enabled: isLoading,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              _imageFile == null
-                  ? CircleAvatar(
-                      radius: 50,
-                      backgroundColor: Colors.grey[300],
-                      child: const Icon(
-                        Icons.person,
-                        size: 50,
-                        color: Colors.white,
-                      ),
-                    )
-                  : CircleAvatar(
-                      radius: 50,
-                      backgroundImage: FileImage(_imageFile!),
-                    ),
-              IconButton(
-                onPressed: _pickImage,
-                icon: const Icon(Icons.edit),
+          child: Card(
+            color: const Color(0xFF82BFF5),
+            child: Padding(
+              padding: const EdgeInsets.all(10),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  _imageFile == null
+                      ? CircleAvatar(
+                          radius: 50,
+                          backgroundColor: Colors.grey[300],
+                          child: const Icon(
+                            Icons.person,
+                            size: 50,
+                            color: Colors.white,
+                          ),
+                        )
+                      : CircleAvatar(
+                          radius: 50,
+                          backgroundImage: FileImage(_imageFile!),
+                        ),
+                  IconButton(
+                    onPressed: _pickImage,
+                    icon: const Icon(Icons.edit),
+                  ),
+                  const SizedBox(height: 20),
+                  widgetUserInformationListTiles(),
+                ],
               ),
-              const SizedBox(height: 20),
-              Expanded(
-                child: ListView(
-                  children: [
-                    ListTile(
-                      title: const Text("Name"),
-                      leading: const Icon(Icons.people),
-                      subtitle: Text(name),
-                    ),
-                    const Divider(),
-                    ListTile(
-                      title: const Text("Email"),
-                      leading: const Icon(Icons.email),
-                      subtitle: Text(email),
-                    ),
-                    const Divider(),
-                    ListTile(
-                      title: const Text("Number"),
-                      leading: const Icon(Icons.phone),
-                      subtitle: Text(number),
-                    ),
-                    const Divider(),
-                    ListTile(
-                      title: const Text("Address"),
-                      leading: const Icon(Icons.house),
-                      subtitle: Text(address),
-                    ),
-                    const Divider(),
-                    ListTile(
-                      title: const Text("Card Holder Name"),
-                      leading: const Icon(Icons.people_alt),
-                      subtitle: Text(cardHolderName),
-                    ),
-                    const Divider(),
-                    ListTile(
-                      title: const Text("Credit Card Info"),
-                      leading: const Icon(Icons.credit_card),
-                      subtitle: Text(cardNumber),
-                    ),
-                  ],
-                ),
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const PersonalInformation(),
-                    ),
-                  );
-                },
-                style: const ButtonStyle(
-                  backgroundColor: WidgetStatePropertyAll(Colors.amber),
-                  fixedSize: WidgetStatePropertyAll(Size(double.maxFinite, 60)),
-                ),
-                child: const Text(
-                  "Edit Information",
-                  style: TextStyle(color: Colors.black, fontSize: 20),
-                ),
-              ),
-            ],
+            ),
           ),
         ),
+      ),
+    );
+  }
+
+  Widget widgetEditInformationButton() {
+    return ElevatedButton(
+      onPressed: () {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const PersonalInformation(),
+          ),
+        );
+      },
+      style: const ButtonStyle(
+        backgroundColor: WidgetStatePropertyAll(Colors.amber),
+        fixedSize: WidgetStatePropertyAll(Size(double.maxFinite, 30)),
+      ),
+      child: const Text(
+        "Edit Information",
+        style: TextStyle(color: Colors.black, fontSize: 16),
+      ),
+    );
+  }
+
+  Widget widgetUserInformationListTiles() {
+    return Expanded(
+      child: ListView(
+        children: [
+          Card(
+            elevation: 10,
+            child: ListTile(
+              title: const Text("Name"),
+              leading: const Icon(Icons.people),
+              subtitle: Text(name),
+            ),
+          ),
+          const Divider(),
+          Card(
+            elevation: 10,
+            child: ListTile(
+              title: const Text("Email"),
+              leading: const Icon(Icons.email),
+              subtitle: Text(email),
+            ),
+          ),
+          const Divider(),
+          Card(
+            elevation: 10,
+            child: ListTile(
+              title: const Text("Number"),
+              leading: const Icon(Icons.phone),
+              subtitle: Text(number),
+            ),
+          ),
+          const Divider(),
+          Card(
+            elevation: 10,
+            child: ListTile(
+              title: const Text("Address"),
+              leading: const Icon(Icons.house),
+              subtitle: Text(address),
+            ),
+          ),
+          const Divider(),
+          Card(
+            elevation: 10,
+            child: ListTile(
+              title: const Text("Card Holder Name"),
+              leading: const Icon(Icons.people_alt),
+              subtitle: Text(cardHolderName),
+            ),
+          ),
+          const Divider(),
+          Card(
+            elevation: 10,
+            child: ListTile(
+              title: const Text("Credit Card Info"),
+              leading: const Icon(Icons.credit_card),
+              subtitle: Text(cardNumber),
+            ),
+          ),
+          const SizedBox(height: 20),
+          widgetEditInformationButton(),
+        ],
       ),
     );
   }

@@ -35,14 +35,28 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   Widget bottomView() {
-    return BottomNavigationBar(
-      currentIndex: _selectedPage,
-      onTap: onSelect,
-      items: const [
-        BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-        BottomNavigationBarItem(icon: Icon(Icons.shopping_cart), label: 'Cart'),
-        BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Account'),
-      ],
+    return ClipRRect(
+      borderRadius: const BorderRadius.only(
+        topLeft: Radius.circular(20),
+        topRight: Radius.circular(20),
+      ),
+      child: BottomNavigationBar(
+        backgroundColor: Colors.orange,
+        currentIndex: _selectedPage,
+        onTap: onSelect,
+        selectedIconTheme: const IconThemeData(size: 36),
+        selectedItemColor: Colors.black,
+        elevation: 10,
+        selectedLabelStyle: const TextStyle(color: Colors.black),
+        items: const [
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.shopping_cart),
+            label: 'Cart',
+          ),
+          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Account'),
+        ],
+      ),
     );
   }
 }
